@@ -56,6 +56,7 @@ table {
 }
 body {
 	font-family: "Source Sans Pro", sans-serif;
+	background-color: ${(props) => props.theme.colorBg}
 }
 a {
 	text-decoration: none;
@@ -66,7 +67,6 @@ function Root() {
 	return (
 		<>
 			<GlobalStyle />
-			<Header />
 			<Outlet />
 		</>
 	);
