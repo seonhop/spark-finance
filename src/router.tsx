@@ -3,6 +3,8 @@ import { createBrowserRouter } from "react-router-dom";
 import Root from "./Root";
 import Home from "./routes/Home";
 import Detail from "./routes/Detail";
+import Price from "./routes/Price";
+import Chart from "./routes/Chart";
 
 const router = createBrowserRouter([
 	{
@@ -16,6 +18,16 @@ const router = createBrowserRouter([
 			{
 				path: "/:cryptoId",
 				element: <Detail />,
+				children: [
+					{
+						path: "price",
+						element: <Price />,
+					},
+					{
+						path: "chart",
+						element: <Chart />,
+					},
+				],
 			},
 		],
 	},
