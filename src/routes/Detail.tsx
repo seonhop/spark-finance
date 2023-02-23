@@ -1,4 +1,10 @@
-import { useParams, useLocation, Link, Outlet } from "react-router-dom";
+import {
+	useParams,
+	useLocation,
+	Link,
+	Outlet,
+	useMatch,
+} from "react-router-dom";
 import { Container, Block, Image, FlexBox } from "../components/BuildingBlocks";
 import LoadingScreen from "../components/Loading";
 import styled from "styled-components";
@@ -40,11 +46,45 @@ const DetailBlock = styled(FlexBox)`
 	padding: 0px 20px;
 `;
 
+const TabBlock = styled(DetailBlock)`
+	background-color: ${(props) => props.theme.colorBlock};
+`;
+
 const TitleBlock = styled(DetailBlock)`
 	margin-top: 80px;
 	flex-direction: row;
 	align-items: center;
 	gap: 12px;
+`;
+
+const Tabs = styled.div`
+	display: flex;
+	flex-direction: row;
+	gap: 12px;
+	margin: 8px 0px;
+`;
+
+const Tab = styled.div<{ isActive: boolean }>`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	span {
+		text-align: center;
+		text-transform: uppercase;
+	}
+	font-size: 12px;
+	font-weight: 400;
+	background-color: ${(props) =>
+		props.isActive ? props.theme.colorNavBar : props.theme.colorTertiary};
+	padding: 12px 20px;
+	border-radius: 10px;
+	border-width: thick;
+	border-color: ${(props) => props.theme.colorNavBar};
+	color: ${(props) =>
+		props.isActive ? props.theme.textRPrimary : props.theme.textRSecondary};
+	a {
+		display: block;
+	}
 `;
 
 interface InfoInterface {
@@ -64,6 +104,9 @@ export default function Detail() {
 	const [loading, setLoading] = useState(true);
 	const [info, setInfo] = useState<IInfoData>();
 	const [priceInfo, setPriceInfo] = useState<IPriceInfoData>();
+	const priceMatch = useMatch("/:assetId/price");
+	const chartMatch = useMatch("/:assetId/chart");
+
 	useEffect(() => {
 		(async () => {
 			const infoData = await (
@@ -108,20 +151,25 @@ export default function Detail() {
 							</TitleBlock>
 						</FlexBox>
 					</Block>
+
 					<Block>
 						<DetailBlock>
+							<Tabs>
+								<Link to="price">
+									<Tab isActive={priceMatch !== null}>
+										<span>Price</span>
+									</Tab>
+								</Link>
+								<Link to="chart">
+									<Tab isActive={chartMatch !== null}>
+										<span>Chart</span>
+									</Tab>
+								</Link>
+							</Tabs>
 							{loading ? (
 								<LoadingScreen />
 							) : (
 								<>
-									<FlexBox>
-										<Link to="price">
-											<span>Price</span>
-										</Link>
-										<Link to="chart">
-											<span>Chart</span>
-										</Link>
-									</FlexBox>
 									<FlexBox>
 										<Outlet
 											context={{
@@ -132,6 +180,8 @@ export default function Detail() {
 								</>
 							)}
 						</DetailBlock>
+
+						<DetailBlock></DetailBlock>
 					</Block>
 				</>
 			)}

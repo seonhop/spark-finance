@@ -9,6 +9,8 @@ import {
 	Image,
 } from "../components/BuildingBlocks";
 import LoadingScreen from "../components/Loading";
+import { useQuery } from "react-query";
+import { fetchCryptos } from "../api";
 
 const CryptoTitle = styled.h1`
 	color: ${(props) => props.theme.textPrimary};
@@ -121,8 +123,10 @@ async function callAPI(cryptos: CryptoInterface[]) {
 }
 
 function Home() {
-	const [cryptos, setCryptos] = useState<CryptoInterface[]>([]);
-	const [loading, setLoading] = useState(true);
+	const { isLoading, data } = useQuery<CryptoInterface[]>(
+		"allCryptos",
+		fetchCryptos
+	);
 	/* 	const getCryptos = async () => {
 		const res = await axios.get("https://api.coinpaprika.com/v1/coins");
 		setCryptos(res.data.slice(0, 30));
@@ -132,7 +136,7 @@ function Home() {
 	useEffect(() => {
 		getCryptos();
 	}); */
-	useEffect(() => {
+	/* 	useEffect(() => {
 		(async () => {
 			const response = await fetch("https://api.coinpaprika.com/v1/coins");
 			const json = await response.json();
@@ -140,7 +144,7 @@ function Home() {
 			setLoading(false);
 		})();
 	}, []);
-	console.log(cryptos);
+	console.log(cryptos); */
 
 	/* 	useEffect(() => {
 		(async () => {
@@ -156,7 +160,6 @@ function Home() {
 			}
 		})();
 	}, []); */
-	console.log("loaading is: ", loading);
 	return (
 		<HomeContainer>
 			<IntroBlock>
@@ -181,11 +184,11 @@ function Home() {
 				<FlexBox>
 					<CryptoTitle>Crypto List</CryptoTitle>
 				</FlexBox>
-				{loading ? (
+				{isLoading ? (
 					<LoadingScreen />
 				) : (
 					<CryptoGrid>
-						{cryptos.map((crypto) => (
+						{data?.slice(0, 30).map((crypto) => (
 							<Link
 								to={`/${crypto.id}`}
 								state={{ info: { id: crypto.id, name: crypto.name } }}
