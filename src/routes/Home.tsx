@@ -1,7 +1,14 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import {
+	FlexBox,
+	Grid,
+	Container,
+	Block,
+	Image,
+} from "../components/BuildingBlocks";
+import LoadingScreen from "../components/Loading";
 
 const CryptoTitle = styled.h1`
 	color: ${(props) => props.theme.textPrimary};
@@ -12,31 +19,8 @@ const CryptoTitle = styled.h1`
 	border-radius: 2px;
 `;
 
-const FlexBox = styled.div`
-	display: flex;
-	flex-direction: column;
-`;
-
-const Grid = styled.div`
-	display: grid;
-`;
-
-const Container = styled.div`
-	margin-left: 20vw;
-	display: flex;
-	flex-direction: column;
-	padding: 40px 20px 0px 20px;
+const HomeContainer = styled(Container)`
 	gap: 20px;
-	color: ${(props) => props.theme.textPrimary};
-	flex: 1;
-`;
-
-const Block = styled.div`
-	display: flex;
-	width: 100%;
-	background-color: ${(props) => props.theme.colorBlock};
-	padding: 20px;
-	border-radius: 4px;
 `;
 
 const IntroBlock = styled(Block)`
@@ -61,16 +45,13 @@ const Description = styled.span`
 	line-height: 1.5;
 `;
 
-const Image = styled.img`
-	src: ${(props) => props.src};
-`;
-
 const TradingImg = styled(Image)`
 	width: 40%;
 `;
 
 const CoinImg = styled(Image)`
 	width: 10%;
+	height: auto;
 `;
 
 const CryptoGrid = styled(Grid)`
@@ -86,39 +67,25 @@ const Crypto = styled(FlexBox)`
 	height: 150px;
 	padding: 20px;
 	background-color: ${(props) => props.theme.colorBlock};
+	:hover {
+		background-color: ${(props) => props.theme.colorHover};
+	}
 	color: ${(props) => props.theme.textPrimary};
+	gap: 12px;
 `;
 
-/* const cryptos = [
-	{
-		id: "btc-bitcoin",
-		name: "Bitcoin",
-		symbol: "BTC",
-		rank: 1,
-		is_new: false,
-		is_active: true,
-		type: "coin",
-	},
-	{
-		id: "eth-ethereum",
-		name: "Ethereum",
-		symbol: "ETH",
-		rank: 2,
-		is_new: false,
-		is_active: true,
-		type: "coin",
-	},
-	{
-		id: "hex-hex",
-		name: "HEX",
-		symbol: "HEX",
-		rank: 3,
-		is_new: false,
-		is_active: true,
-		type: "token",
-	},
-];
- */
+const CryptoLineBlock = styled(FlexBox)`
+	flex-direction: row;
+	gap: 8px;
+	font-size: 80%;
+	align-items: center;
+`;
+
+const CryptoPrice = styled.h1`
+	font-size: 20px;
+	font-weight: 800;
+`;
+
 interface CryptoInterface {
 	id: string;
 	name: string;
@@ -127,21 +94,71 @@ interface CryptoInterface {
 	is_new: boolean;
 	is_active: boolean;
 	type: string;
+	price?: string;
+}
+
+/* async function callAPI(cryptos:CryptoInterface[]) {
+	cryptos.forEach(function (crypto) {
+		const url = `http://cors-anywhere.herokuapp.com/https://api.coinpaprika.com/v1/tickers/${crypto?.id}`;
+		const response = await fetch(url);
+		const data = await response.json();
+		console.log(data);
+		await new Promise(resolve => setTimeout(resolve, 100)); // pause for 1 second before next iteration
+	})
+  } */
+
+async function callAPI(cryptos: CryptoInterface[]) {
+	for (const crypto of cryptos) {
+		const response = await fetch(
+			`https://api.coinpaprika.com/v1/tickers/${crypto?.id}`
+		);
+		const data = await response.json();
+		const price = data?.quotes?.USD?.ath_price;
+		crypto.price = price.toFixed(2);
+		console.log("price is: ", crypto.price);
+		await new Promise((resolve) => setTimeout(resolve, 500)); // pause for 1 second before next iteration
+	}
 }
 
 function Home() {
 	const [cryptos, setCryptos] = useState<CryptoInterface[]>([]);
 	const [loading, setLoading] = useState(true);
-	const getCryptos = async () => {
-		const res = await axios("https://api.coinpaprika.com/v1/coins");
+	/* 	const getCryptos = async () => {
+		const res = await axios.get("https://api.coinpaprika.com/v1/coins");
 		setCryptos(res.data.slice(0, 30));
+		console.log(cryptos);
 		setLoading(false);
 	};
 	useEffect(() => {
 		getCryptos();
-	});
+	}); */
+	useEffect(() => {
+		(async () => {
+			const response = await fetch("https://api.coinpaprika.com/v1/coins");
+			const json = await response.json();
+			setCryptos(json.slice(0, 30));
+			setLoading(false);
+		})();
+	}, []);
+	console.log(cryptos);
+
+	/* 	useEffect(() => {
+		(async () => {
+			for (const crypto of cryptos) {
+				const response = await fetch(
+					`http://cors-anywhere.herokuapp.com/https://api.coinpaprika.com/v1/tickers/${crypto?.id}`
+				);
+				const data = await response.json();
+				const price = data?.quotes?.USD?.ath_price;
+				crypto.price = price.toFixed(2);
+				console.log("price is: ", crypto.price);
+				await new Promise((resolve) => setTimeout(resolve, 500)); // pause for 1 second before next iteration
+			}
+		})();
+	}, []); */
+	console.log("loaading is: ", loading);
 	return (
-		<Container>
+		<HomeContainer>
 			<IntroBlock>
 				<TradingImg src="/images/Cryptocurrency-Investment.png" />
 
@@ -165,18 +182,29 @@ function Home() {
 					<CryptoTitle>Crypto List</CryptoTitle>
 				</FlexBox>
 				{loading ? (
-					"Loading..."
+					<LoadingScreen />
 				) : (
 					<CryptoGrid>
 						{cryptos.map((crypto) => (
-							<Crypto key={crypto.id}>
-								<Link to={`/${crypto.id}`}>{crypto.name}</Link>
-							</Crypto>
+							<Link
+								to={`/${crypto.id}`}
+								state={{ info: { id: crypto.id, name: crypto.name } }}
+							>
+								<Crypto key={crypto.id}>
+									<CryptoLineBlock>
+										<CoinImg
+											src={`https://cryptocurrencyliveprices.com/img/${crypto.id}.png`}
+										/>
+										{crypto.name}
+									</CryptoLineBlock>
+									<CryptoPrice>${crypto.price}</CryptoPrice>
+								</Crypto>
+							</Link>
 						))}
 					</CryptoGrid>
 				)}
 			</CryptoBlock>
-		</Container>
+		</HomeContainer>
 	);
 }
 

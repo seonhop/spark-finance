@@ -8,6 +8,7 @@ declare module "styled-components" {
 		colorPrimary: string;
 		colorSecondary: string;
 		colorTertiary: string;
+		colorHover: string;
 		textPrimary: string;
 		textSecondary: string;
 		textRPrimary?: string;

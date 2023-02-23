@@ -14,7 +14,7 @@ const router = createBrowserRouter([
 				element: <Home />,
 			},
 			{
-				path: "/:assetId",
+				path: "/:cryptoId",
 				element: <Detail />,
 			},
 		],
