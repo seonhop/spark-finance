@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 const CryptoTitle = styled.h1`
 	color: ${(props) => props.theme.textPrimary};
@@ -87,7 +89,7 @@ const Crypto = styled(FlexBox)`
 	color: ${(props) => props.theme.textPrimary};
 `;
 
-const cryptos = [
+/* const cryptos = [
 	{
 		id: "btc-bitcoin",
 		name: "Bitcoin",
@@ -116,8 +118,28 @@ const cryptos = [
 		type: "token",
 	},
 ];
+ */
+interface CryptoInterface {
+	id: string;
+	name: string;
+	symbol: string;
+	rank: number;
+	is_new: boolean;
+	is_active: boolean;
+	type: string;
+}
 
 function Home() {
+	const [cryptos, setCryptos] = useState<CryptoInterface[]>([]);
+	const [loading, setLoading] = useState(true);
+	const getCryptos = async () => {
+		const res = await axios("https://api.coinpaprika.com/v1/coins");
+		setCryptos(res.data.slice(0, 30));
+		setLoading(false);
+	};
+	useEffect(() => {
+		getCryptos();
+	});
 	return (
 		<Container>
 			<IntroBlock>
@@ -142,13 +164,17 @@ function Home() {
 				<FlexBox>
 					<CryptoTitle>Crypto List</CryptoTitle>
 				</FlexBox>
-				<CryptoGrid>
-					{cryptos.map((crypto) => (
-						<Crypto key={crypto.id}>
-							<Link to={`/${crypto.id}`}>{crypto.name}</Link>
-						</Crypto>
-					))}
-				</CryptoGrid>
+				{loading ? (
+					"Loading..."
+				) : (
+					<CryptoGrid>
+						{cryptos.map((crypto) => (
+							<Crypto key={crypto.id}>
+								<Link to={`/${crypto.id}`}>{crypto.name}</Link>
+							</Crypto>
+						))}
+					</CryptoGrid>
+				)}
 			</CryptoBlock>
 		</Container>
 	);
