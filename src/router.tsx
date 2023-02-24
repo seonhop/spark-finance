@@ -34,7 +34,7 @@ const router = createBrowserRouter(
 			],
 		},
 	],
-	{ basename: "/spark-finance" }
+	{ basename: process.env.PUBLIC_URL }
 );
 
 export default router;
