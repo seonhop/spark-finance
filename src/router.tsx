@@ -8,7 +8,7 @@ import Chart from "./routes/Chart";
 
 const router = createBrowserRouter([
 	{
-		path: "/",
+		path: "/spark-finance",
 		element: <Root />,
 		children: [
 			{
