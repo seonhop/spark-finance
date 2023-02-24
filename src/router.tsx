@@ -5,6 +5,7 @@ import Home from "./routes/Home";
 import Detail from "./routes/Detail";
 import Price from "./routes/Price";
 import Chart from "./routes/Chart";
+import React from "react";
 
 const router = createBrowserRouter(
 	[

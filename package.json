@@ -53,5 +53,5 @@
 	"devDependencies": {
 		"@types/styled-components": "^5.1.26"
 	},
-	"homepage": "https://seonhop.github.io/spark-finance"
+	"homepage": "https://seonhop.github.io/spark-finance/"
 }
