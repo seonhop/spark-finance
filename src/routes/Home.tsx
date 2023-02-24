@@ -27,6 +27,8 @@ const HomeContainer = styled(Container)`
 
 const IntroBlock = styled(Block)`
 	padding: 10px 80px;
+	display: flex;
+	flex-direction: row;
 	justify-content: space-between;
 `;
 

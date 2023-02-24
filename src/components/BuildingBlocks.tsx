@@ -18,6 +18,7 @@ export const Container = styled(FlexBox)`
 
 export const Block = styled.div`
 	display: flex;
+	flex-direction: column;
 	width: 100%;
 	background-color: ${(props) => props.theme.colorBlock};
 	padding: 20px;

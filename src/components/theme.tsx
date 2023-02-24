@@ -11,7 +11,7 @@ export const lightTheme: DefaultTheme = {
 	textPrimary: "#333333",
 	textSecondary: "#858585",
 	textRPrimary: "white",
-	textRSecondary: "5A617A",
+	textRSecondary: "#5A617A",
 };
 
 export const darkTheme: DefaultTheme = {
@@ -24,4 +24,6 @@ export const darkTheme: DefaultTheme = {
 	colorTertiary: "#212841",
 	textPrimary: "white",
 	textSecondary: "#5A617A",
+	textRPrimary: "white",
+	textRSecondary: "#5A617A",
 };
