@@ -1,8 +1,10 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
 import Header from "./components/Header";
 import styled from "styled-components";
+import { lightTheme, darkTheme } from "./components/theme";
+import { useState } from "react";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,800;1,400;1,600;1,800&display=swap');
@@ -81,6 +83,8 @@ const NavBar = styled.div`
 	position: fixed;
 	background-color: ${(props) => props.theme.colorNavBar};
 	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
 `;
 
 const NavBarContainer = styled.ul`
@@ -100,20 +104,48 @@ const Logo = styled.h1`
 	font-size: 20px;
 `;
 
+const Toggle = styled.button`
+	border: none;
+	width: 100%;
+	overflow: visible;
+	border: ${(props) => props.theme.colorPrimary} 1px solid;
+	border-radius: 20px;
+	padding: 12px;
+
+	background-color: ${(props) => props.theme.colorBg};
+	color: ${(props) => props.theme.textPrimary};
+`;
+
 function Root() {
+	const [theme, setTheme] = useState("dark");
+	const toggleTheme = () => {
+		if (theme === "light") {
+			setTheme("dark");
+		} else {
+			setTheme("light");
+		}
+	};
 	return (
 		<>
-			<GlobalStyle />
-			<NavBar>
-				<Logo>SPARK FINANCE</Logo>
-				<NavBarContainer>
-					<NavBarItem>Stocks</NavBarItem>
-					<NavBarItem>Cryptos</NavBarItem>
-				</NavBarContainer>
-			</NavBar>
-			<Outlet />
+			<ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+				<GlobalStyle />
+				<NavBar>
+					<Logo>SPARK FINANCE</Logo>
+
+					<Toggle onClick={toggleTheme}>Switch Theme</Toggle>
+				</NavBar>
+				<Outlet />
+			</ThemeProvider>
 		</>
 	);
 }
 
 export default Root;
+
+{
+	/* <NavBarContainer>
+<NavBarItem>Stocks</NavBarItem>
+<NavBarItem>Cryptos</NavBarItem>
+</NavBarContainer>
+ */
+}
