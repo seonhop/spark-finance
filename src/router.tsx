@@ -6,31 +6,34 @@ import Detail from "./routes/Detail";
 import Price from "./routes/Price";
 import Chart from "./routes/Chart";
 
-const router = createBrowserRouter([
-	{
-		path: "/spark-finance",
-		element: <Root />,
-		children: [
-			{
-				path: "",
-				element: <Home />,
-			},
-			{
-				path: "/:cryptoId",
-				element: <Detail />,
-				children: [
-					{
-						path: "price",
-						element: <Price />,
-					},
-					{
-						path: "chart",
-						element: <Chart />,
-					},
-				],
-			},
-		],
-	},
-]);
+const router = createBrowserRouter(
+	[
+		{
+			path: "/",
+			element: <Root />,
+			children: [
+				{
+					path: "",
+					element: <Home />,
+				},
+				{
+					path: "/:cryptoId",
+					element: <Detail />,
+					children: [
+						{
+							path: "price",
+							element: <Price />,
+						},
+						{
+							path: "chart",
+							element: <Chart />,
+						},
+					],
+				},
+			],
+		},
+	],
+	{ basename: "/spark-finance" }
+);
 
 export default router;
