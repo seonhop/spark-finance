@@ -165,9 +165,7 @@ function Home() {
 	return (
 		<HomeContainer>
 			<IntroBlock>
-				<TradingImg
-					src={process.env.PUBLIC_URL + "/images/Dollar-dynamic-collar.png"}
-				/>
+				<TradingImg src="https://clouddevs.com/3dbay/files/preview/1281x1191/11647890811q5lrmcmi8npu1otmi3edv5a4zfthd9kv13dg1dmml0ltqefpqwtgg1lthb8aqgdh5loqvdehgfopldk5chfjfp3vgnlozpfoyuye.png" />
 
 				<TextBlock>
 					<span>
