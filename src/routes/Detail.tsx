@@ -109,7 +109,7 @@ const Tab = styled.div<{ isActive: boolean }>`
 	font-size: 12px;
 	font-weight: 400;
 	background-color: ${(props) =>
-		props.isActive ? props.theme.colorNavBar : props.theme.colorTertiary};
+		props.isActive ? props.theme.colorNavBar : props.theme.colorBg};
 	padding: 12px 20px;
 	border-radius: 10px;
 	border-width: thick;
