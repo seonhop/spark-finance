@@ -93,12 +93,15 @@ export default function Price() {
 			<PriceGrid>
 				<PriceCard>
 					<span>- Current Price -</span>
-					<PriceValue>${usdQuotes.price.toLocaleString("en-US")} </PriceValue>
+					<PriceValue>
+						{" "}
+						{"$ " + usdQuotes.price.toLocaleString("en-US")}{" "}
+					</PriceValue>
 					<span>
 						{" "}
-						All time high was ${usdQuotes.ath_price.toLocaleString(
-							"en-US"
-						)} on {formattedDate(usdQuotes.ath_date.toString())}
+						All time high was{" "}
+						{"$" + usdQuotes.ath_price.toLocaleString("en-US")} on{" "}
+						{formattedDate(usdQuotes.ath_date.toString())}
 					</span>
 				</PriceCard>
 				<PriceCard>

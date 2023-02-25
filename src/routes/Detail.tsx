@@ -123,6 +123,10 @@ const Tab = styled.div<{ isActive: boolean }>`
 	}
 `;
 
+const Description = styled.p`
+	text-overflow: ellipsis;
+`;
+
 interface InfoInterface {
 	id: string;
 	name: string;
@@ -134,11 +138,17 @@ interface RouterState {
 	};
 }
 
-const DescriptionContainer = styled.div`
+const DescriptionContainer = styled(Block)`
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 	height: 100%;
+	div:first-child > div {
+		height: 100%;
+		overflow: hidden;
+
+		background-color: "red";
+	}
 `;
 
 const BlockTitle = styled.h1`
@@ -265,27 +275,27 @@ export default function Detail() {
 								)}
 							</DetailBlock>
 						</PriceChartBlock>
-						<Block>
-							<DescriptionContainer>
-								<FlexBox>
-									<BlockTitle>What's {infoData?.name}?</BlockTitle>
-									{infoData?.description}
-								</FlexBox>
+						<DescriptionContainer>
+							<FlexBox>
+								<BlockTitle>What's {infoData?.name}?</BlockTitle>
+								<div>
+									<Description>{infoData?.description}</Description>
+								</div>
+							</FlexBox>
 
-								<DescriptionBlock>
-									<span>Rank: {infoData?.rank}</span>
-									<span>Started at: {date}</span>
+							<DescriptionBlock>
+								<span>Rank: {infoData?.rank}</span>
+								<span>Started at: {date}</span>
 
-									<span>
-										Total supply:{" "}
-										{priceData?.total_supply.toLocaleString("en-US")}
-									</span>
-									<span>
-										Max supply: {priceData?.max_supply.toLocaleString("en-US")}
-									</span>
-								</DescriptionBlock>
-							</DescriptionContainer>
-						</Block>
+								<span>
+									Total supply:{" "}
+									{priceData?.total_supply.toLocaleString("en-US")}
+								</span>
+								<span>
+									Max supply: {priceData?.max_supply.toLocaleString("en-US")}
+								</span>
+							</DescriptionBlock>
+						</DescriptionContainer>
 					</DetailGrid>
 				</>
 			)}

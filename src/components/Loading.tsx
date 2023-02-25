@@ -26,7 +26,7 @@ export default function LoadingScreen() {
 		<LoadingBlock>
 			<LoadingHeader>Hang tight 👻</LoadingHeader>
 			<LoadingText>
-				We're trying to fetch the requested data from CoinPaprika
+				We're trying to fetch the requested data from CoinGecko
 			</LoadingText>
 		</LoadingBlock>
 	);

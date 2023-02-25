@@ -12,8 +12,8 @@ export const lightTheme: DefaultTheme = {
 	textSecondary: "#858585",
 	textRPrimary: "white",
 	textRSecondary: "#9ca1b3",
-	changePos: "#52B455",
-	changeNeg: "#DC4F45",
+	changePos: "#02b747",
+	changeNeg: "#ef403c",
 	changeNone: "#9ca1b3",
 };
 

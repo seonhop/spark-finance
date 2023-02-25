@@ -225,7 +225,7 @@ function Home() {
 												<CoinImg src={crypto.image} />
 												{crypto.name}
 											</CryptoLineBlock>
-											<CryptoPrice>${crypto.current_price}</CryptoPrice>
+											<CryptoPrice>{"$ " + +crypto.current_price}</CryptoPrice>
 										</CryptoPriceNameBlock>
 
 										<CryptoChangeBlock priceChange={crypto.price_change_24h}>
@@ -234,7 +234,7 @@ function Home() {
 													? "- $" +
 													  +Math.abs(crypto.price_change_24h).toFixed(6)
 													: crypto.price_change_24h === 0
-													? "$" + +crypto.price_change_24h
+													? "-"
 													: "+ $" + +crypto.price_change_24h.toFixed(6)}
 											</span>
 											<span>
