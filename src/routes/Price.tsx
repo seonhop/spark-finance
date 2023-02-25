@@ -28,6 +28,8 @@ const PercentChangeTitleBlock = styled(FlexBox)`
 `;
 
 const PercentChangeValue = styled.span<{ isPos: boolean }>`
+	display: inline-block;
+	text-align: right;
 	color: ${(props) =>
 		props.isPos ? props.theme.changePos : props.theme.changeNeg};
 `;
@@ -105,7 +107,12 @@ export default function Price() {
 						<span>1 Day</span>
 					</PercentChangeTitleBlock>
 					<PercentChangeValue isPos={oneDayPos}>
-						{usdQuotes.percent_change_24h}%
+						{usdQuotes.percent_change_24h < 0
+							? "- " + +Math.abs(usdQuotes.percent_change_24h).toFixed(6)
+							: usdQuotes.percent_change_24h === 0
+							? "-"
+							: "+ " + +usdQuotes.percent_change_24h.toFixed(6)}
+						%
 					</PercentChangeValue>
 				</PriceCard>
 				<PriceCard>
@@ -114,7 +121,12 @@ export default function Price() {
 						<span>1 Week</span>
 					</PercentChangeTitleBlock>
 					<PercentChangeValue isPos={oneWeekPos}>
-						{usdQuotes.percent_change_7d}%
+						{usdQuotes.percent_change_7d < 0
+							? "- " + +Math.abs(usdQuotes.percent_change_7d).toFixed(6)
+							: usdQuotes.percent_change_7d === 0
+							? "-"
+							: "+ " + +usdQuotes.percent_change_7d.toFixed(6)}
+						%
 					</PercentChangeValue>
 				</PriceCard>
 				<PriceCard>
@@ -123,7 +135,12 @@ export default function Price() {
 						<span>1 Month</span>
 					</PercentChangeTitleBlock>
 					<PercentChangeValue isPos={oneMonthPos}>
-						{usdQuotes.percent_change_30d}%
+						{usdQuotes.percent_change_30d < 0
+							? "- " + +Math.abs(usdQuotes.percent_change_30d).toFixed(6)
+							: usdQuotes.percent_change_30d === 0
+							? "-"
+							: "+ " + +usdQuotes.percent_change_30d.toFixed(6)}
+						%
 					</PercentChangeValue>
 				</PriceCard>
 				<PriceCard>
@@ -132,7 +149,12 @@ export default function Price() {
 						<span>1 Year</span>
 					</PercentChangeTitleBlock>
 					<PercentChangeValue isPos={oneYearPos}>
-						{usdQuotes.percent_change_1y}%
+						{usdQuotes.percent_change_1y < 0
+							? "- " + +Math.abs(usdQuotes.percent_change_1y).toFixed(6)
+							: usdQuotes.percent_change_1y === 0
+							? "-"
+							: "+ " + +usdQuotes.percent_change_1y.toFixed(6)}
+						%
 					</PercentChangeValue>
 				</PriceCard>
 			</PriceGrid>
