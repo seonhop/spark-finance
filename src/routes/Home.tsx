@@ -10,7 +10,8 @@ import {
 } from "../components/BuildingBlocks";
 import LoadingScreen from "../components/Loading";
 import { useQuery } from "react-query";
-import { fetchCryptos } from "../api";
+import { fetchAllCoinPrice, fetchCryptos } from "../api";
+import { IAllPrice } from "../interfaces/AllPrice";
 
 const CryptoTitle = styled.h1`
 	color: ${(props) => props.theme.textPrimary};
@@ -111,57 +112,19 @@ interface CryptoInterface {
 	})
   } */
 
-async function callAPI(cryptos: CryptoInterface[]) {
-	for (const crypto of cryptos) {
-		const response = await fetch(
-			`https://api.coinpaprika.com/v1/tickers/${crypto?.id}`
-		);
-		const data = await response.json();
-		const price = data?.quotes?.USD?.ath_price;
-		crypto.price = price.toFixed(2);
-		console.log("price is: ", crypto.price);
-		await new Promise((resolve) => setTimeout(resolve, 500)); // pause for 1 second before next iteration
-	}
-}
-
 function Home() {
-	const { isLoading, data } = useQuery<CryptoInterface[]>(
+	const { isLoading: fetchLoading, data } = useQuery<CryptoInterface[]>(
 		"allCryptos",
 		fetchCryptos
 	);
-	/* 	const getCryptos = async () => {
-		const res = await axios.get("https://api.coinpaprika.com/v1/coins");
-		setCryptos(res.data.slice(0, 30));
-		console.log(cryptos);
-		setLoading(false);
-	};
-	useEffect(() => {
-		getCryptos();
-	}); */
-	/* 	useEffect(() => {
-		(async () => {
-			const response = await fetch("https://api.coinpaprika.com/v1/coins");
-			const json = await response.json();
-			setCryptos(json.slice(0, 30));
-			setLoading(false);
-		})();
-	}, []);
-	console.log(cryptos); */
-
-	/* 	useEffect(() => {
-		(async () => {
-			for (const crypto of cryptos) {
-				const response = await fetch(
-					`http://cors-anywhere.herokuapp.com/https://api.coinpaprika.com/v1/tickers/${crypto?.id}`
-				);
-				const data = await response.json();
-				const price = data?.quotes?.USD?.ath_price;
-				crypto.price = price.toFixed(2);
-				console.log("price is: ", crypto.price);
-				await new Promise((resolve) => setTimeout(resolve, 500)); // pause for 1 second before next iteration
-			}
-		})();
-	}, []); */
+	const slicedData = data?.slice(0, 30);
+	const cryptoSymbols = slicedData?.map((crypto) => crypto.symbol).join(",");
+	const { isLoading: priceLoading, data: allPriceData } = useQuery<IAllPrice>(
+		"allCryptoPrice",
+		() => fetchAllCoinPrice(cryptoSymbols)
+	);
+	const isLoading = fetchLoading && priceLoading;
+	console.log(allPriceData);
 	return (
 		<HomeContainer>
 			<IntroBlock>
@@ -190,7 +153,7 @@ function Home() {
 					<LoadingScreen />
 				) : (
 					<CryptoGrid>
-						{data?.slice(0, 30).map((crypto) => (
+						{slicedData?.slice(0, 30).map((crypto) => (
 							<Link
 								to={`/${crypto.id}`}
 								state={{ info: { id: crypto.id, name: crypto.name } }}
@@ -202,7 +165,11 @@ function Home() {
 										/>
 										{crypto.name}
 									</CryptoLineBlock>
-									<CryptoPrice>${crypto.price}</CryptoPrice>
+									<CryptoPrice>
+										{allPriceData?.DISPLAY[
+											crypto.symbol
+										].USD.PRICE.toLocaleString()}
+									</CryptoPrice>
 								</Crypto>
 							</Link>
 						))}

@@ -19,7 +19,11 @@ const ChartBlock = styled(FlexBox)`
 `;
 
 export default function Chart() {
-	const { id: cryptoId, symbol } = useOutletContext<IDetailOutlet>();
+	const {
+		id: cryptoId,
+		symbol,
+		curr_theme: theme,
+	} = useOutletContext<IDetailOutlet>();
 	console.log("cryptoId: ", cryptoId, "symbol: ", symbol);
 	const { isLoading, data: historicalData } = useQuery<IHistoricalData>(
 		["ohlcv", symbol],
@@ -48,7 +52,7 @@ export default function Chart() {
 			background: "transparent",
 		},
 		theme: {
-			mode: "dark",
+			mode: theme == "dark" ? "dark" : "light",
 		},
 		grid: { show: false },
 		yaxis: {

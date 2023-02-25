@@ -4,4 +4,5 @@ export default interface IDetailOutlet {
 	id: string;
 	symbol: string;
 	priceData: IPriceInfoData;
+	curr_theme: string;
 }

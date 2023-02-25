@@ -134,7 +134,7 @@ function Root() {
 
 					<Toggle onClick={toggleTheme}>Switch Theme</Toggle>
 				</NavBar>
-				<Outlet />
+				<Outlet context={{ curr_theme: theme }} />
 			</ThemeProvider>
 		</>
 	);

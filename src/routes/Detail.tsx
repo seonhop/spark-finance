@@ -4,6 +4,7 @@ import {
 	Link,
 	Outlet,
 	useMatch,
+	useOutletContext,
 } from "react-router-dom";
 import {
 	Container,
@@ -20,6 +21,7 @@ import IInfoData from "../interfaces/InfoData";
 import { useQuery } from "react-query";
 import { fetchCryptoInfo, fetchCryptoTickers } from "../api";
 import { formattedDate } from "../components/FormattedDate";
+import { IRootOutlet } from "../interfaces/RootOutlet";
 
 const BackButton = styled.div`
 	display: flex;
@@ -169,6 +171,7 @@ export default function Detail() {
 	const { state } = useLocation() as RouterState;
 	const priceMatch = useMatch("/:assetId/price");
 	const chartMatch = useMatch("/:assetId/chart");
+	const { curr_theme: theme } = useOutletContext<IRootOutlet>();
 	const { isLoading: infoLoading, data: infoData } = useQuery<IInfoData>(
 		["info", cryptoId],
 		() => fetchCryptoInfo(`${cryptoId}`)
@@ -254,6 +257,7 @@ export default function Detail() {
 													id: infoData?.id,
 													symbol: infoData?.symbol,
 													priceData: priceData,
+													curr_theme: theme,
 												}}
 											/>
 										</DataBlock>
