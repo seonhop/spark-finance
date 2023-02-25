@@ -22,6 +22,7 @@ import { useQuery } from "react-query";
 import { fetchCryptoInfo, fetchCryptoTickers } from "../api";
 import { formattedDate } from "../components/FormattedDate";
 import { IRootOutlet } from "../interfaces/RootOutlet";
+import { IfetchCryptosFromCoinGecko } from "../interfaces/CryptoGecko";
 
 const BackButton = styled.div`
 	display: flex;
@@ -125,6 +126,10 @@ const Tab = styled.div<{ isActive: boolean }>`
 
 const Description = styled.p`
 	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 12; /* Change the number of lines here */
+	-webkit-box-orient: vertical;
+	line-height: 1.5;
 `;
 
 interface InfoInterface {
@@ -134,7 +139,7 @@ interface InfoInterface {
 
 interface RouterState {
 	state: {
-		info: InfoInterface;
+		info: IfetchCryptosFromCoinGecko;
 	};
 }
 
@@ -178,7 +183,9 @@ const DataBlock = styled(FlexBox)`
 
 export default function Detail() {
 	const { cryptoId } = useParams();
+	console.log(cryptoId);
 	const { state } = useLocation() as RouterState;
+	console.log(state);
 	const priceMatch = useMatch("/:assetId/price");
 	const chartMatch = useMatch("/:assetId/chart");
 	const { curr_theme: theme } = useOutletContext<IRootOutlet>();
@@ -205,8 +212,11 @@ export default function Detail() {
 			setLoading(false);
 		})();
 	}, [cryptoId]); */
-	console.log(priceData);
-	const dateString = infoData?.started_at.toString();
+	console.log("infoData: ", infoData);
+	console.log("priceData: ", priceData);
+	const dateString = infoData?.started_at
+		? infoData?.started_at.toString()
+		: null;
 	let date = "";
 
 	if (dateString) {
@@ -229,9 +239,7 @@ export default function Detail() {
 					</Link>
 					<TitleContainer>
 						<TitleBlock>
-							<CryptoImg
-								src={`https://cryptocurrencyliveprices.com/img/${cryptoId}.png`}
-							/>
+							<CryptoImg src={state?.info.image} />
 							<CryptoName>
 								{state?.info.name
 									? state?.info.name
@@ -245,12 +253,17 @@ export default function Detail() {
 						<PriceChartBlock>
 							<DetailBlock>
 								<Tabs>
-									<Link to="price">
+									<Link
+										to="price"
+										state={{
+											info: state?.info,
+										}}
+									>
 										<Tab isActive={priceMatch !== null}>
 											<span>Price</span>
 										</Tab>
 									</Link>
-									<Link to="chart">
+									<Link to="chart" state={{ info: state?.info }}>
 										<Tab isActive={chartMatch !== null}>
 											<span>Chart</span>
 										</Tab>
@@ -277,22 +290,31 @@ export default function Detail() {
 						</PriceChartBlock>
 						<DescriptionContainer>
 							<FlexBox>
-								<BlockTitle>What's {infoData?.name}?</BlockTitle>
+								<BlockTitle>What's {state?.info.name}?</BlockTitle>
 								<div>
-									<Description>{infoData?.description}</Description>
+									<Description>
+										{infoData?.description
+											? infoData.description
+											: "Unfortunately, there is no description available for this coin :("}
+									</Description>
 								</div>
 							</FlexBox>
 
 							<DescriptionBlock>
-								<span>Rank: {infoData?.rank}</span>
+								<span>Rank: {state?.info.rank}</span>
 								<span>Started at: {date}</span>
 
 								<span>
 									Total supply:{" "}
-									{priceData?.total_supply.toLocaleString("en-US")}
+									{state?.info.total_supply
+										? state?.info.total_supply.toLocaleString("en-US")
+										: "N/A"}
 								</span>
 								<span>
-									Max supply: {priceData?.max_supply.toLocaleString("en-US")}
+									Total volume:{" "}
+									{state?.info.total_volume
+										? state?.info.total_volume.toLocaleString("en-US")
+										: "N/A"}
 								</span>
 							</DescriptionBlock>
 						</DescriptionContainer>

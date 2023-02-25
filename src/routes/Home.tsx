@@ -163,6 +163,12 @@ function Home() {
 		"allCryptos",
 		fetchCryptosFromCoinGecko
 	);
+	if (data) {
+		for (let i = 0; i < data.length; i++) {
+			data[i].rank = i + 1;
+		}
+	}
+
 	console.log(data);
 	/* 	const slicedData = data?.slice(0, 30);
 	const cryptoSymbols = slicedData?.map((crypto) => crypto.symbol).join(",");
@@ -213,10 +219,7 @@ function Home() {
 								<Link
 									to={`/${crypto.symbol + "-" + crypto.id}`}
 									state={{
-										info: {
-											id: crypto.symbol + "-" + crypto.id,
-											name: crypto.name,
-										},
+										info: crypto,
 									}}
 								>
 									<Crypto key={crypto.id}>
@@ -225,7 +228,14 @@ function Home() {
 												<CoinImg src={crypto.image} />
 												{crypto.name}
 											</CryptoLineBlock>
-											<CryptoPrice>{"$ " + +crypto.current_price}</CryptoPrice>
+											<CryptoPrice>
+												{"$ " +
+													crypto.current_price
+														.toLocaleString("en-US", {
+															minimumFractionDigits: 5,
+														})
+														.replace(/\.?0+$/, "")}
+											</CryptoPrice>
 										</CryptoPriceNameBlock>
 
 										<CryptoChangeBlock priceChange={crypto.price_change_24h}>

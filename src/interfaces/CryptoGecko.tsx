@@ -25,6 +25,7 @@ export interface IfetchCryptosFromCoinGecko {
 	atl_date: Date;
 	roi: Roi | null;
 	last_updated: Date;
+	rank?: number;
 }
 
 export interface Roi {
