@@ -10,8 +10,13 @@ import {
 } from "../components/BuildingBlocks";
 import LoadingScreen from "../components/Loading";
 import { useQuery } from "react-query";
-import { fetchAllCoinPrice, fetchCryptos } from "../api";
+import {
+	fetchAllCoinPrice,
+	fetchCryptos,
+	fetchCryptosFromCoinGecko,
+} from "../api";
 import { IAllPrice } from "../interfaces/AllPrice";
+import { IfetchCryptosFromCoinGecko } from "../interfaces/CryptoGecko";
 
 const CryptoTitle = styled.h1`
 	color: ${(props) => props.theme.textPrimary};
@@ -77,6 +82,7 @@ const Crypto = styled(FlexBox)`
 	}
 	color: ${(props) => props.theme.textPrimary};
 	gap: 12px;
+	justify-content: space-between;
 `;
 
 const CryptoLineBlock = styled(FlexBox)`
@@ -102,6 +108,12 @@ interface CryptoInterface {
 	price?: string;
 }
 
+const CryptoChangeBlock = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+`;
+
 /* async function callAPI(cryptos:CryptoInterface[]) {
 	cryptos.forEach(function (crypto) {
 		const url = `http://cors-anywhere.herokuapp.com/https://api.coinpaprika.com/v1/tickers/${crypto?.id}`;
@@ -113,70 +125,83 @@ interface CryptoInterface {
   } */
 
 function Home() {
-	const { isLoading: fetchLoading, data } = useQuery<CryptoInterface[]>(
+	const { isLoading, data } = useQuery<IfetchCryptosFromCoinGecko[]>(
 		"allCryptos",
-		fetchCryptos
+		fetchCryptosFromCoinGecko
 	);
-	const slicedData = data?.slice(0, 30);
+	console.log(data);
+	/* 	const slicedData = data?.slice(0, 30);
 	const cryptoSymbols = slicedData?.map((crypto) => crypto.symbol).join(",");
+	//console.log(cryptoSymbols);
 	const { isLoading: priceLoading, data: allPriceData } = useQuery<IAllPrice>(
 		"allCryptoPrice",
 		() => fetchAllCoinPrice(cryptoSymbols)
 	);
-	const isLoading = fetchLoading && priceLoading;
-	console.log(allPriceData);
+	const isLoading = fetchLoading && priceLoading; */
+	//console.log(slicedData);
+	//console.log(allPriceData);
 	return (
-		<HomeContainer>
-			<IntroBlock>
-				<TradingImg src="https://clouddevs.com/3dbay/files/preview/1281x1191/11647890811q5lrmcmi8npu1otmi3edv5a4zfthd9kv13dg1dmml0ltqefpqwtgg1lthb8aqgdh5loqvdehgfopldk5chfjfp3vgnlozpfoyuye.png" />
+		<div>
+			<HomeContainer>
+				<IntroBlock>
+					<TradingImg src="https://clouddevs.com/3dbay/files/preview/1281x1191/11647890811q5lrmcmi8npu1otmi3edv5a4zfthd9kv13dg1dmml0ltqefpqwtgg1lthb8aqgdh5loqvdehgfopldk5chfjfp3vgnlozpfoyuye.png" />
 
-				<TextBlock>
-					<span>
-						Welcome to <br />
-						<b>SPARK FINANCE!</b>
-					</span>
+					<TextBlock>
+						<span>
+							Welcome to <br />
+							<b>SPARK FINANCE!</b>
+						</span>
+						<FlexBox>
+							<Description>
+								Are you looking for crypto infos? <br />
+								SPARK FINANCE provides you with real-time and up-to-date
+								information on your favorite cryptos.
+							</Description>
+						</FlexBox>
+					</TextBlock>
+				</IntroBlock>
+
+				<CryptoBlock>
 					<FlexBox>
-						<Description>
-							Are you looking for crypto infos? <br />
-							SPARK FINANCE provides you with real-time and up-to-date
-							information on your favorite cryptos.
-						</Description>
+						<CryptoTitle>Crypto List</CryptoTitle>
 					</FlexBox>
-				</TextBlock>
-			</IntroBlock>
+					{isLoading ? (
+						<LoadingScreen />
+					) : (
+						<CryptoGrid>
+							{data?.map((crypto) => (
+								<Link
+									to={`/${crypto.symbol + "-" + crypto.id}`}
+									state={{
+										info: {
+											id: crypto.symbol + "-" + crypto.id,
+											name: crypto.name,
+										},
+									}}
+								>
+									<Crypto key={crypto.id}>
+										<div>
+											<CryptoLineBlock>
+												<CoinImg src={crypto.image} />
+												{crypto.name}
+											</CryptoLineBlock>
+											<CryptoPrice>
+												${crypto.current_price.toLocaleString()}
+											</CryptoPrice>
+										</div>
 
-			<CryptoBlock>
-				<FlexBox>
-					<CryptoTitle>Crypto List</CryptoTitle>
-				</FlexBox>
-				{isLoading ? (
-					<LoadingScreen />
-				) : (
-					<CryptoGrid>
-						{slicedData?.slice(0, 30).map((crypto) => (
-							<Link
-								to={`/${crypto.id}`}
-								state={{ info: { id: crypto.id, name: crypto.name } }}
-							>
-								<Crypto key={crypto.id}>
-									<CryptoLineBlock>
-										<CoinImg
-											src={`https://cryptocurrencyliveprices.com/img/${crypto.id}.png`}
-										/>
-										{crypto.name}
-									</CryptoLineBlock>
-									<CryptoPrice>
-										{allPriceData?.DISPLAY[
-											crypto.symbol
-										].USD.PRICE.toLocaleString()}
-									</CryptoPrice>
-								</Crypto>
-							</Link>
-						))}
-					</CryptoGrid>
-				)}
-			</CryptoBlock>
-		</HomeContainer>
+										<CryptoChangeBlock>
+											<span>${crypto.price_change_24h.toLocaleString()}</span>
+											<span>{crypto.price_change_percentage_24h}</span>
+										</CryptoChangeBlock>
+									</Crypto>
+								</Link>
+							))}
+						</CryptoGrid>
+					)}
+				</CryptoBlock>
+			</HomeContainer>
+		</div>
 	);
 }
 

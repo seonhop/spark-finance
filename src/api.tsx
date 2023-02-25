@@ -5,7 +5,14 @@ const CRYPTO_COMPARE_PRICE_URL = `https://min-api.cryptocompare.com/data/pricemu
 const NICO_API = `https://ohlcv-api.nomadcoders.workers.dev?coinId=`;
 
 export function fetchCryptos() {
+	console.log(`${BASE_URL}/coins`);
 	return fetch(`${BASE_URL}/coins`).then((response) => response.json());
+}
+
+export function fetchCryptosFromCoinGecko() {
+	return fetch(
+		`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=30&page=1`
+	).then((response) => response.json());
 }
 
 export function fetchCryptoInfo(cryptoId: string) {
@@ -31,6 +38,8 @@ export function fetchCoinHistory(cryptoSymbol: string) {
 }
 
 export function fetchAllCoinPrice(cryptoSymbols: string | undefined) {
+	const link = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${cryptoSymbols}&tsyms=USD`;
+	console.log(link);
 	return fetch(
 		`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${cryptoSymbols}&tsyms=USD`
 	).then((response) => response.json());
