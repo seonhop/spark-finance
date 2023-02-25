@@ -13,5 +13,8 @@ declare module "styled-components" {
 		textSecondary: string;
 		textRPrimary?: string;
 		textRSecondary?: string;
+		changePos: string;
+		changeNeg: string;
+		changeNone: string;
 	}
 }

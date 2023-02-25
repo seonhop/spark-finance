@@ -21,10 +21,7 @@ import { IfetchCryptosFromCoinGecko } from "../interfaces/CryptoGecko";
 const CryptoTitle = styled.h1`
 	color: ${(props) => props.theme.textPrimary};
 	font-size: 20px;
-	display: inline-block;
-	background-color: ${(props) => props.theme.colorBlock};
-	padding: 20px;
-	border-radius: 2px;
+	display: block;
 `;
 
 const HomeContainer = styled(Container)`
@@ -49,7 +46,7 @@ const TextBlock = styled.div`
 	justify-content: space-between;
 `;
 
-const Description = styled.span`
+const Description = styled.p`
 	color: ${(props) => props.theme.textSecondary};
 	margin-top: 20px;
 	line-height: 1.5;
@@ -108,10 +105,47 @@ interface CryptoInterface {
 	price?: string;
 }
 
-const CryptoChangeBlock = styled.div`
+const CryptoChangeBlock = styled.div<{ priceChange: number }>`
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
+	gap: 4px;
+	span {
+		text-align: right;
+	}
+	span:first-child {
+		color: ${(props) => props.theme.textRSecondary};
+		font-size: 14px;
+	}
+	span:last-child {
+		color: ${(props) =>
+			props.priceChange == 0
+				? props.theme.changeNone
+				: props.priceChange > 0
+				? props.theme.changePos
+				: props.theme.changeNeg};
+		font-size: 24px;
+	}
+`;
+
+const CryptoPriceNameBlock = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+`;
+
+const CryptoTitleBlock = styled.div`
+	display: flex;
+	justify-content: space-between;
+	flex: 1;
+	background-color: ${(props) => props.theme.colorBlock};
+	align-items: flex-end;
+	padding: 20px;
+	border-radius: 2px;
+	span {
+		color: ${(props) => props.theme.textRSecondary};
+		font-size: 12px;
+	}
 `;
 
 /* async function callAPI(cryptos:CryptoInterface[]) {
@@ -162,9 +196,15 @@ function Home() {
 				</IntroBlock>
 
 				<CryptoBlock>
-					<FlexBox>
+					<CryptoTitleBlock>
 						<CryptoTitle>Crypto List</CryptoTitle>
-					</FlexBox>
+						<span>
+							Powered by{" "}
+							<a href="https://www.coingecko.com/en/api/documentation">
+								CoinGecko
+							</a>
+						</span>
+					</CryptoTitleBlock>
 					{isLoading ? (
 						<LoadingScreen />
 					) : (
@@ -180,19 +220,36 @@ function Home() {
 									}}
 								>
 									<Crypto key={crypto.id}>
-										<div>
+										<CryptoPriceNameBlock>
 											<CryptoLineBlock>
 												<CoinImg src={crypto.image} />
 												{crypto.name}
 											</CryptoLineBlock>
-											<CryptoPrice>
-												${crypto.current_price.toLocaleString()}
-											</CryptoPrice>
-										</div>
+											<CryptoPrice>${crypto.current_price}</CryptoPrice>
+										</CryptoPriceNameBlock>
 
-										<CryptoChangeBlock>
-											<span>${crypto.price_change_24h.toLocaleString()}</span>
-											<span>{crypto.price_change_percentage_24h}</span>
+										<CryptoChangeBlock priceChange={crypto.price_change_24h}>
+											<span>
+												{crypto.price_change_24h < 0
+													? "- $" +
+													  +Math.abs(crypto.price_change_24h).toFixed(6)
+													: crypto.price_change_24h === 0
+													? "$" + +crypto.price_change_24h
+													: "+ $" + +crypto.price_change_24h.toFixed(6)}
+											</span>
+											<span>
+												{crypto.price_change_percentage_24h === 0
+													? "—"
+													: crypto.price_change_24h > 0
+													? "+ " +
+													  +crypto.price_change_percentage_24h.toFixed(2) +
+													  "%"
+													: "- " +
+													  +Math.abs(
+															crypto.price_change_percentage_24h
+													  ).toFixed(2) +
+													  "%"}
+											</span>
 										</CryptoChangeBlock>
 									</Crypto>
 								</Link>

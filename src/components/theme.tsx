@@ -12,6 +12,9 @@ export const lightTheme: DefaultTheme = {
 	textSecondary: "#858585",
 	textRPrimary: "white",
 	textRSecondary: "#9ca1b3",
+	changePos: "#52B455",
+	changeNeg: "#DC4F45",
+	changeNone: "#9ca1b3",
 };
 
 export const darkTheme: DefaultTheme = {
@@ -26,4 +29,7 @@ export const darkTheme: DefaultTheme = {
 	textSecondary: "#5A617A",
 	textRPrimary: "white",
 	textRSecondary: "#5A617A",
+	changePos: "#52B455",
+	changeNeg: "#DC4F45",
+	changeNone: "#5A617A",
 };

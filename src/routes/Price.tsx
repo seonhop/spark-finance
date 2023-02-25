@@ -28,7 +28,8 @@ const PercentChangeTitleBlock = styled(FlexBox)`
 `;
 
 const PercentChangeValue = styled.span<{ isPos: boolean }>`
-	color: ${(props) => (props.isPos ? "#52B455" : "#DC4F45")};
+	color: ${(props) =>
+		props.isPos ? props.theme.changePos : props.theme.changeNeg};
 `;
 
 const PriceValue = styled.span`
