@@ -292,7 +292,7 @@ const PriceDetailContainer = styled.div`
 const PriceDetailBlock = styled.div`
 	display: flex;
 	flex-direction: column;
-	background-color: ${(props) => props.theme.colorBg};
+	background-color: ${(props) => props.theme.colorHover};
 	padding: 20px;
 	gap: 20px;
 	div {
