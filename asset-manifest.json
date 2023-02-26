@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/spark-finance/static/js/main.36524420.js",
+    "main.js": "/spark-finance/static/js/main.590017c2.js",
     "index.html": "/spark-finance/index.html",
-    "main.36524420.js.map": "/spark-finance/static/js/main.36524420.js.map"
+    "main.590017c2.js.map": "/spark-finance/static/js/main.590017c2.js.map"
   },
   "entrypoints": [
-    "static/js/main.36524420.js"
+    "static/js/main.590017c2.js"
   ]
 }
