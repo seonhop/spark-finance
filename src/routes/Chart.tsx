@@ -4,6 +4,7 @@ import { fetchCoinHistory } from "../api";
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { FlexBox } from "../components/BuildingBlocks";
+import LoadingScreen from "../components/Loading";
 
 const ChartBlock = styled(FlexBox)`
 	justify-items: flex-end;
@@ -24,7 +25,7 @@ interface IChart {
 
 export default function Chart(props: IChart) {
 	const { isLoading, data: historicalData } = useQuery<number[][]>(
-		["ohlcv", props.day],
+		["ohlcv" + props.cryptoId, props.day],
 		() => fetchCoinHistory(props.cryptoId, props.day) //1, 7, 30, 365, max
 	);
 	const close_prices = historicalData?.map((data) => ({
@@ -101,7 +102,7 @@ export default function Chart(props: IChart) {
 	return (
 		<ChartBlock>
 			{isLoading ? (
-				"Chart is loading..."
+				<LoadingScreen />
 			) : (
 				<ReactApexChart
 					options={props.isLineChart ? lineOptions : candleOptions}
