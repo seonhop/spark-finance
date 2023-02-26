@@ -278,10 +278,12 @@ const PriceChangeBlock = styled.div`
 	align-self: center;
 `;
 
-const PriceDetailContainer = styled.div`
+const PriceDetailContainer = styled.div<{ isLight: boolean }>`
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr;
-	gap: 4px;
+	gap: ${(props) => (props.isLight ? "2px" : "4px")};
+	background-color: ${(props) =>
+		props.isLight ? props.theme.colorBg : props.theme.colorBlock};
 	div:first-child {
 		div:first-child {
 			span:last-child {
@@ -294,12 +296,16 @@ const PriceDetailContainer = styled.div`
 			}
 		}
 	}
+	div {
+		background-color: ${(props) =>
+			props.isLight ? props.theme.textRPrimary : props.theme.colorBg};
+		border-radius: 4px;
+	}
 `;
 
 const PriceDetailBlock = styled.div`
 	display: flex;
 	flex-direction: column;
-	background-color: ${(props) => props.theme.colorHover};
 	padding: 20px;
 	gap: 20px;
 	div {
@@ -422,7 +428,7 @@ export default function Detail() {
 								</PriceChangeBlock>
 							</PriceBlock>
 						</TitleBlock>
-						<PriceDetailContainer>
+						<PriceDetailContainer isLight={theme === "light"}>
 							<PriceDetailBlock>
 								<div>
 									<span> High</span>
