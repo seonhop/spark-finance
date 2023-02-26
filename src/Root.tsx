@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import styled from "styled-components";
 import { lightTheme, darkTheme } from "./components/theme";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,800;1,400;1,600;1,800&display=swap');
@@ -102,6 +103,9 @@ const NavBarItem = styled.li`
 const Logo = styled.h1`
 	font-weight: 400;
 	font-size: 20px;
+	:hover {
+		cursor: pointer;
+	}
 `;
 
 const Toggle = styled.button`
@@ -116,6 +120,9 @@ const Toggle = styled.button`
 	color: ${(props) => props.theme.textPrimary};
 	:hover {
 		cursor: pointer;
+	}
+	span {
+		color: ${(props) => props.theme.colorThemeOn};
 	}
 `;
 
@@ -133,9 +140,17 @@ function Root() {
 			<ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
 				<GlobalStyle />
 				<NavBar>
-					<Logo>SPARK FINANCE</Logo>
+					<Logo>
+						<Link to="/">SPARK FINANCE</Link>
+					</Logo>
 
-					<Toggle onClick={toggleTheme}>Switch Theme</Toggle>
+					<Toggle onClick={toggleTheme}>
+						{theme === "light" ? (
+							<span className="material-symbols-outlined">light_mode</span>
+						) : (
+							<span className="material-symbols-outlined">dark_mode</span>
+						)}
+					</Toggle>
 				</NavBar>
 				<Outlet context={{ curr_theme: theme }} />
 			</ThemeProvider>

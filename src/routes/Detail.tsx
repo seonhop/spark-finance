@@ -36,6 +36,8 @@ const BackButton = styled.div`
 	border-radius: 100%;
 	gap: 4px;
 	margin-bottom: 20px;
+	color: ${(props) => props.theme.textRPrimary};
+
 	div {
 		display: flex;
 		justify-content: center;
@@ -45,7 +47,8 @@ const BackButton = styled.div`
 
 		background-color: ${(props) => props.theme.colorSecondary};
 		:hover {
-			background-color: ${(props) => props.theme.colorHover};
+			background-color: ${(props) => props.theme.textRPrimary};
+			color: ${(props) => props.theme.colorPrimary};
 		}
 	}
 	span {
@@ -53,7 +56,6 @@ const BackButton = styled.div`
 		font-size: 20px;
 		width: auto;
 	}
-	color: ${(props) => props.theme.textRPrimary};
 `;
 
 const DetailGrid = styled(Grid)`
@@ -176,7 +178,12 @@ const Tab = styled.div<{ isActive: boolean }>`
 	:hover {
 		cursor: pointer;
 		background-color: ${(props) =>
-			!props.isActive ? props.theme.colorHover : props.theme.colorNavBar};
+			!props.isActive
+				? props.theme.colorBtnHover
+					? props.theme.colorBtnHover
+					: props.theme.colorHover
+				: props.theme.colorNavBar};
+		color: ${(props) => props.theme.textPrimary};
 	}
 `;
 

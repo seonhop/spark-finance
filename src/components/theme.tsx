@@ -15,6 +15,8 @@ export const lightTheme: DefaultTheme = {
 	changePos: "#02b747",
 	changeNeg: "#ef403c",
 	changeNone: "#9ca1b3",
+	colorThemeOn: "#F4D03F 	",
+	colorBtnHover: "#f5f8ff",
 };
 
 export const darkTheme: DefaultTheme = {
@@ -32,4 +34,5 @@ export const darkTheme: DefaultTheme = {
 	changePos: "#52B455",
 	changeNeg: "#DC4F45",
 	changeNone: "#5A617A",
+	colorThemeOn: "#FFFF66	",
 };
