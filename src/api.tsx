@@ -27,6 +27,11 @@ export function fetchCryptoTickers(cryptoId: string) {
 	);
 }
 
+export function fetchMarketChart(cryptoId: string, from: string, to: string) {
+	return fetch(`https://api.coingecko.com/api/v3/coins/${cryptoId}/market_chart/range?vs_currency=usd&from=${from}&to=${to}
+	`);
+}
+
 export function fetchCoinHistory(cryptoId: string, days: number) {
 	//const endDate = Math.floor(Date.now() / 1000);
 	//const startDate = endDate - 60 * 60 * 24 * 7; //one week ago

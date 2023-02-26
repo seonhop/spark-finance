@@ -23,6 +23,7 @@ import { fetchCryptoInfo, fetchCryptoTickers } from "../api";
 import { formattedDate } from "../components/FormattedDate";
 import { IRootOutlet } from "../interfaces/RootOutlet";
 import { IfetchCryptosFromCoinGecko } from "../interfaces/CryptoGecko";
+import { formattedPrice } from "../components/FormattedPrice";
 
 const BackButton = styled.div`
 	display: flex;
@@ -31,12 +32,24 @@ const BackButton = styled.div`
 	justify-content: flex-start;
 	width: auto;
 	flex-shrink: 0;
-	padding: 8px 12px;
-	border-radius: 4px;
+	border-radius: 100%;
 	gap: 4px;
+	margin-bottom: 20px;
+	div {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 12px;
+		border-radius: 50px;
+
+		background-color: ${(props) => props.theme.colorSecondary};
+		:hover {
+			background-color: ${(props) => props.theme.colorHover};
+		}
+	}
 	span {
 		vertical-align: middle;
-		font-size: 14px;
+		font-size: 20px;
 		width: auto;
 	}
 `;
@@ -108,8 +121,20 @@ const TitleContainer = styled(DetailPageBlock)`
 const TitleBlock = styled(FlexBox)`
 	flex-direction: row;
 	align-items: center;
-	gap: 12px;
+	gap: 40px;
 	height: 12vh;
+	div:first-child {
+		flex-direction: row;
+		align-items: center;
+		gap: 12px;
+	}
+	div:last-child {
+		align-items: center;
+	}
+	img {
+		width: 30px;
+		height: 30px;
+	}
 `;
 
 const Tabs = styled.div`
@@ -146,6 +171,9 @@ const Description = styled.div`
 	width: 100%;
 
 	line-height: 1.5;
+	a {
+		text-decoration: underline;
+	}
 `;
 
 interface InfoInterface {
@@ -171,12 +199,29 @@ const DescriptionContainer = styled(Block)`
 
 		background-color: "red";
 	}
+	padding: 40px;
 `;
 
 const BlockTitle = styled.h1`
 	margin: 20px 0px 12px 0px;
 	font-size: 18px;
 	font-weight: 600;
+`;
+
+const PriceBlock = styled.div<{ isPos: boolean }>`
+	display: flex;
+	gap: 20px;
+	align-items: center;
+	justify-content: center;
+	> span:first-child {
+		color: ${(props) =>
+			props.isPos ? props.theme.changePos : props.theme.changeNeg};
+		font-size: 36px;
+	}
+	div {
+		background-color: ${(props) =>
+			props.isPos ? props.theme.changePos : props.theme.changeNeg};
+	}
 `;
 
 const DescriptionBlock = styled(FlexBox)`
@@ -198,12 +243,65 @@ const DataBlock = styled(FlexBox)`
 	height: 100%;
 `;
 
+const PriceChangeBlock = styled.div`
+	display: flex;
+	color: "white";
+	padding: 4px 8px;
+	border-radius: 4px;
+	align-items: center;
+	justify-content: center;
+	color: white;
+	align-self: center;
+`;
+
+const PriceDetailContainer = styled.div`
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+	gap: 4px;
+	div:first-child {
+		div:first-child {
+			span:last-child {
+				color: ${(props) => props.theme.changePos};
+			}
+		}
+		div:last-child {
+			span:last-child {
+				color: ${(props) => props.theme.changeNeg};
+			}
+		}
+	}
+`;
+
+const PriceDetailBlock = styled.div`
+	display: flex;
+	flex-direction: column;
+	background-color: ${(props) => props.theme.colorBg};
+	padding: 20px;
+	gap: 20px;
+	div {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		span:first-child {
+			font-size: 14px;
+			color: ${(props) => props.theme.textRSecondary};
+		}
+		span:last-child {
+			font-size: 18px;
+		}
+	}
+`;
+
 export default function Detail() {
 	const { state } = useLocation() as RouterState;
 	console.log(state);
 	const cryptoId = state?.info.id;
 	const priceMatch = useMatch("/:assetId/price");
 	const chartMatch = useMatch("/:assetId/chart");
+	const [isLineChart, setIsLineChart] = useState(true);
+	const onChartTypeClick = () => {
+		setIsLineChart((prev) => !prev);
+	};
 	const { curr_theme: theme } = useOutletContext<IRootOutlet>();
 	const { isLoading: infoLoading, data: infoData } = useQuery<IInfoData>(
 		["info", cryptoId],
@@ -214,20 +312,6 @@ export default function Detail() {
 		() => fetchCryptoTickers(`${cryptoId}`)
 	);
 	const loading = infoLoading && priceLoading;
-
-	/* 	useEffect(() => {
-		(async () => {
-			const infoData = await (
-				await fetch(`https://api.coinpaprika.com/v1/coins/${cryptoId}`)
-			).json();
-			const priceInfoData = await (
-				await fetch(`https://api.coinpaprika.com/v1/tickers/${cryptoId}`)
-			).json();
-			setInfo(infoData);
-			setPriceInfo(priceInfoData);
-			setLoading(false);
-		})();
-	}, [cryptoId]); */
 	console.log("infoData: ", infoData);
 	console.log("priceData: ", priceData);
 	const dateString = infoData?.genesis_date
@@ -249,8 +333,9 @@ export default function Detail() {
 				<>
 					<Link to="/">
 						<BackButton>
-							<span className="material-icons md-24">arrow_back_ios_new</span>
-							<span>Home</span>
+							<div>
+								<span className="material-icons md-18">home</span>
+							</div>
 						</BackButton>
 					</Link>
 					<TitleContainer>
@@ -259,15 +344,95 @@ export default function Detail() {
 							<span>{state?.info.symbol.toUpperCase()}</span>
 						</RankBlock>
 						<TitleBlock>
-							<CryptoImg src={state?.info.image} />
-							<CryptoName>
-								{state?.info.name
-									? state?.info.name
-									: loading
-									? "Loading..."
-									: infoData?.name}
-							</CryptoName>
+							<FlexBox>
+								<CryptoImg src={state?.info.image} />
+								<CryptoName>
+									{state?.info.name
+										? state?.info.name
+										: loading
+										? "Loading..."
+										: infoData?.name}
+								</CryptoName>
+							</FlexBox>
+							<PriceBlock isPos={state?.info.price_change_percentage_24h > 0}>
+								<span>${formattedPrice(state?.info.current_price)}</span>
+								<PriceChangeBlock>
+									<span className="material-icons md-24 md-light">
+										{state?.info.price_change_percentage_24h > 0
+											? "arrow_drop_up"
+											: "arrow_drop_down"}
+									</span>
+									<span>
+										{Math.abs(state?.info.price_change_percentage_24h).toFixed(
+											2
+										)}
+										%
+									</span>
+								</PriceChangeBlock>
+							</PriceBlock>
 						</TitleBlock>
+						<PriceDetailContainer>
+							<PriceDetailBlock>
+								<div>
+									<span> High</span>
+									<span>${formattedPrice(state?.info.high_24h)}</span>
+								</div>
+								<div>
+									<span> Low</span>
+									<span>${formattedPrice(state?.info.low_24h)}</span>
+								</div>
+							</PriceDetailBlock>
+							<PriceDetailBlock>
+								<div>
+									<span> Market Cap </span>
+									<span>{state?.info.market_cap.toLocaleString("en-US")}</span>
+								</div>
+								<div>
+									<span>Fully Diluted Market Cap </span>
+									<span>
+										{" "}
+										{state?.info.fully_diluted_valuation
+											? state?.info.fully_diluted_valuation.toLocaleString(
+													"en-US"
+											  )
+											: "N/A"}
+									</span>
+								</div>
+							</PriceDetailBlock>
+
+							<PriceDetailBlock>
+								<div>
+									<span> Total Volume</span>
+									<span>
+										{state?.info.total_volume.toLocaleString("en-US")}
+									</span>
+								</div>
+							</PriceDetailBlock>
+							<PriceDetailBlock>
+								<div>
+									<span> Circulating Supply</span>
+									<span>
+										{state?.info.circulating_supply.toLocaleString("en-US")}
+									</span>
+								</div>
+								<div>
+									<span>Max Supply</span>
+									<span>
+										{state?.info.max_supply
+											? state?.info.max_supply.toLocaleString("en-US")
+											: "N/A"}
+									</span>
+								</div>
+								<div>
+									<span>Total Supply</span>
+									<span>
+										{state?.info.total_supply
+											? state?.info.total_supply.toLocaleString("en-US")
+											: "N/A"}
+									</span>
+								</div>
+							</PriceDetailBlock>
+						</PriceDetailContainer>
 					</TitleContainer>
 					<DetailGrid>
 						<PriceChartBlock>
@@ -321,24 +486,6 @@ export default function Detail() {
 									></Description>
 								</div>
 							</FlexBox>
-
-							<DescriptionBlock>
-								<span>Rank: {state?.info.rank}</span>
-								<span>Started at: {date}</span>
-
-								<span>
-									Total supply:{" "}
-									{state?.info.total_supply
-										? state?.info.total_supply.toLocaleString("en-US")
-										: "N/A"}
-								</span>
-								<span>
-									Total volume:{" "}
-									{state?.info.total_volume
-										? state?.info.total_volume.toLocaleString("en-US")
-										: "N/A"}
-								</span>
-							</DescriptionBlock>
 						</DescriptionContainer>
 					</DetailGrid>
 				</>
