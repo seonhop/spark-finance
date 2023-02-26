@@ -40,6 +40,8 @@ const TextBlock = styled.div`
 	flex-direction: column;
 	> span:first-child {
 		font-size: 48px;
+		font-weight: 600;
+		margin-top: 40px;
 	}
 	width: 50%;
 	padding: 60px 0px 40px 0px;

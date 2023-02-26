@@ -183,7 +183,8 @@ const Tab = styled.div<{ isActive: boolean }>`
 					? props.theme.colorBtnHover
 					: props.theme.colorHover
 				: props.theme.colorNavBar};
-		color: ${(props) => props.theme.textPrimary};
+		color: ${(props) =>
+			!props.isActive ? props.theme.textPrimary : props.theme.textRPrimary};
 	}
 `;
 
