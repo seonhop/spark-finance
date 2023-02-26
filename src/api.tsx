@@ -11,14 +11,14 @@ export function fetchCryptos() {
 
 export function fetchCryptosFromCoinGecko() {
 	return fetch(
-		`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=30&page=1`
+		`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1`
 	).then((response) => response.json());
 }
 
 export function fetchCryptoInfo(cryptoId: string) {
-	return fetch(`${BASE_URL}/coins/${cryptoId}`).then((response) =>
-		response.json()
-	);
+	return fetch(
+		`https://api.coingecko.com/api/v3/coins/${cryptoId}?localization=false`
+	).then((response) => response.json());
 }
 
 export function fetchCryptoTickers(cryptoId: string) {
@@ -27,13 +27,13 @@ export function fetchCryptoTickers(cryptoId: string) {
 	);
 }
 
-export function fetchCoinHistory(cryptoSymbol: string) {
+export function fetchCoinHistory(cryptoId: string, days: number) {
 	//const endDate = Math.floor(Date.now() / 1000);
 	//const startDate = endDate - 60 * 60 * 24 * 7; //one week ago
 	//console.log("endDate: ", endDate, "startDate: ", startDate);
-	const limit = 20;
 	return fetch(
-		`${CRYPTO_COMPARE_HIST_URL}fsym=${cryptoSymbol}&tsym=USD&limit=${limit}`
+		`https://api.coingecko.com/api/v3/coins/${cryptoId}/ohlc?vs_currency=usd&days=${days}
+		`
 	).then((response) => response.json());
 }
 

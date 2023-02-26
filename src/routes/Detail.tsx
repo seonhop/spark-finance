@@ -42,14 +42,18 @@ const BackButton = styled.div`
 `;
 
 const DetailGrid = styled(Grid)`
-	grid-template-columns: 2fr 1fr;
 	grid-gap: 4px;
 	height: 100%;
 `;
 
+const DetailPageBlock = styled(Block)`
+	padding: 20px 40px;
+	padding-left: 40px;
+`;
+
 const DetailContainer = styled(Container)`
 	gap: 4px;
-	height: 100vh;
+	height: 100%;
 `;
 
 const CryptoImg = styled(Image)`
@@ -61,14 +65,13 @@ const CryptoName = styled.h1`
 	font-size: 36px;
 `;
 
-const PriceChartBlock = styled(Block)`
+const PriceChartBlock = styled(DetailPageBlock)`
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 `;
 
 const DetailBlock = styled.div`
-	padding: 0px 20px;
 	height: 100%;
 	display: flex;
 	flex: 1;
@@ -81,13 +84,28 @@ const TabBlock = styled(FlexBox)`
 	background-color: ${(props) => props.theme.colorBlock};
 `;
 
-const TitleContainer = styled(Block)`
-	padding: 0px 20px;
+const RankBlock = styled.div`
+	display: flex;
+	margin-top: 40px;
+	gap: 12px;
+
+	align-items: center;
+	span {
+		display: block;
+		background-color: ${(props) => props.theme.colorHover};
+		color: ${(props) => props.theme.textRSecondary};
+		border-radius: 4px;
+		padding: 8px 12px;
+	}
+`;
+
+const TitleContainer = styled(DetailPageBlock)`
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
 `;
 
 const TitleBlock = styled(FlexBox)`
-	padding: 0px 20px;
-	margin-top: 40px;
 	flex-direction: row;
 	align-items: center;
 	gap: 12px;
@@ -124,11 +142,9 @@ const Tab = styled.div<{ isActive: boolean }>`
 	}
 `;
 
-const Description = styled.p`
-	text-overflow: ellipsis;
-	display: -webkit-box;
-	-webkit-line-clamp: 12; /* Change the number of lines here */
-	-webkit-box-orient: vertical;
+const Description = styled.div`
+	width: 100%;
+
 	line-height: 1.5;
 `;
 
@@ -144,6 +160,7 @@ interface RouterState {
 }
 
 const DescriptionContainer = styled(Block)`
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -182,10 +199,9 @@ const DataBlock = styled(FlexBox)`
 `;
 
 export default function Detail() {
-	const { cryptoId } = useParams();
-	console.log(cryptoId);
 	const { state } = useLocation() as RouterState;
 	console.log(state);
+	const cryptoId = state?.info.id;
 	const priceMatch = useMatch("/:assetId/price");
 	const chartMatch = useMatch("/:assetId/chart");
 	const { curr_theme: theme } = useOutletContext<IRootOutlet>();
@@ -214,8 +230,8 @@ export default function Detail() {
 	}, [cryptoId]); */
 	console.log("infoData: ", infoData);
 	console.log("priceData: ", priceData);
-	const dateString = infoData?.started_at
-		? infoData?.started_at.toString()
+	const dateString = infoData?.genesis_date
+		? infoData?.genesis_date.toString()
 		: null;
 	let date = "";
 
@@ -238,6 +254,10 @@ export default function Detail() {
 						</BackButton>
 					</Link>
 					<TitleContainer>
+						<RankBlock>
+							<span>Rank #{state?.info.rank}</span>
+							<span>{state?.info.symbol.toUpperCase()}</span>
+						</RankBlock>
 						<TitleBlock>
 							<CryptoImg src={state?.info.image} />
 							<CryptoName>
@@ -279,8 +299,8 @@ export default function Detail() {
 													name: infoData?.name,
 													id: infoData?.id,
 													symbol: infoData?.symbol,
-													priceData: priceData,
 													curr_theme: theme,
+													infoData: infoData,
 												}}
 											/>
 										</DataBlock>
@@ -292,11 +312,13 @@ export default function Detail() {
 							<FlexBox>
 								<BlockTitle>What's {state?.info.name}?</BlockTitle>
 								<div>
-									<Description>
-										{infoData?.description
-											? infoData.description
-											: "Unfortunately, there is no description available for this coin :("}
-									</Description>
+									<Description
+										dangerouslySetInnerHTML={{
+											__html: infoData?.description.en
+												? infoData.description.en
+												: "Unfortunately, there is no description available for this coin :(",
+										}}
+									></Description>
 								</div>
 							</FlexBox>
 

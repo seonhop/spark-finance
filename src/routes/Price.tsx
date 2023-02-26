@@ -4,6 +4,7 @@ import { StringLiteral } from "typescript";
 import IDetailOutlet from "../interfaces/DetailOutlet";
 import { Block, FlexBox } from "../components/BuildingBlocks";
 import { formattedDate } from "../components/FormattedDate";
+import { info } from "console";
 
 const PriceContainer = styled.div`
 	display: flex;
@@ -80,13 +81,13 @@ const PriceCard = styled.div`
 `;
 
 export default function Price() {
-	const { priceData } = useOutletContext<IDetailOutlet>();
-	const usdQuotes = priceData.quotes.USD;
-	console.log(priceData);
-	const oneDayPos = usdQuotes.percent_change_24h > 0;
-	const oneWeekPos = usdQuotes.percent_change_7d > 0;
-	const oneMonthPos = usdQuotes.percent_change_30d > 0;
-	const oneYearPos = usdQuotes.percent_change_1y > 0;
+	const { infoData } = useOutletContext<IDetailOutlet>();
+	const marketData = infoData.market_data;
+	const oneDayPos = marketData.price_change_percentage_24h_in_currency.usd > 0;
+	const oneWeekPos = marketData.price_change_percentage_7d_in_currency.usd > 0;
+	const oneMonthPos =
+		marketData.price_change_percentage_30d_in_currency.usd > 0;
+	const oneYearPos = marketData.price_change_percentage_1y_in_currency.usd > 0;
 
 	return (
 		<PriceContainer>
@@ -95,13 +96,13 @@ export default function Price() {
 					<span>- Current Price -</span>
 					<PriceValue>
 						{" "}
-						{"$ " + usdQuotes.price.toLocaleString("en-US")}{" "}
+						{"$ " + marketData.current_price.usd.toLocaleString("en-US")}{" "}
 					</PriceValue>
 					<span>
 						{" "}
-						All time high was{" "}
-						{"$" + usdQuotes.ath_price.toLocaleString("en-US")} on{" "}
-						{formattedDate(usdQuotes.ath_date.toString())}
+						All time high was {"$" +
+							marketData.ath.usd.toLocaleString("en-US")}{" "}
+						on {formattedDate(marketData.ath_date.usd.toString())}
 					</span>
 				</PriceCard>
 				<PriceCard>
@@ -110,11 +111,17 @@ export default function Price() {
 						<span>1 Day</span>
 					</PercentChangeTitleBlock>
 					<PercentChangeValue isPos={oneDayPos}>
-						{usdQuotes.percent_change_24h < 0
-							? "- " + +Math.abs(usdQuotes.percent_change_24h).toFixed(6)
-							: usdQuotes.percent_change_24h === 0
+						{marketData.price_change_percentage_24h_in_currency.usd < 0
+							? "- " +
+							  +Math.abs(
+									marketData.price_change_percentage_24h_in_currency.usd
+							  ).toFixed(6)
+							: marketData.price_change_percentage_24h_in_currency.usd === 0
 							? "-"
-							: "+ " + +usdQuotes.percent_change_24h.toFixed(6)}
+							: "+ " +
+							  +marketData.price_change_percentage_24h_in_currency.usd.toFixed(
+									6
+							  )}
 						%
 					</PercentChangeValue>
 				</PriceCard>
@@ -124,11 +131,17 @@ export default function Price() {
 						<span>1 Week</span>
 					</PercentChangeTitleBlock>
 					<PercentChangeValue isPos={oneWeekPos}>
-						{usdQuotes.percent_change_7d < 0
-							? "- " + +Math.abs(usdQuotes.percent_change_7d).toFixed(6)
-							: usdQuotes.percent_change_7d === 0
+						{marketData.price_change_percentage_7d_in_currency.usd < 0
+							? "- " +
+							  +Math.abs(
+									marketData.price_change_percentage_7d_in_currency.usd
+							  ).toFixed(6)
+							: marketData.price_change_percentage_7d_in_currency.usd === 0
 							? "-"
-							: "+ " + +usdQuotes.percent_change_7d.toFixed(6)}
+							: "+ " +
+							  +marketData.price_change_percentage_7d_in_currency.usd.toFixed(
+									6
+							  )}
 						%
 					</PercentChangeValue>
 				</PriceCard>
@@ -138,11 +151,17 @@ export default function Price() {
 						<span>1 Month</span>
 					</PercentChangeTitleBlock>
 					<PercentChangeValue isPos={oneMonthPos}>
-						{usdQuotes.percent_change_30d < 0
-							? "- " + +Math.abs(usdQuotes.percent_change_30d).toFixed(6)
-							: usdQuotes.percent_change_30d === 0
+						{marketData.price_change_percentage_30d_in_currency.usd < 0
+							? "- " +
+							  +Math.abs(
+									marketData.price_change_percentage_30d_in_currency.usd
+							  ).toFixed(6)
+							: marketData.price_change_percentage_30d_in_currency.usd === 0
 							? "-"
-							: "+ " + +usdQuotes.percent_change_30d.toFixed(6)}
+							: "+ " +
+							  +marketData.price_change_percentage_30d_in_currency.usd.toFixed(
+									6
+							  )}
 						%
 					</PercentChangeValue>
 				</PriceCard>
@@ -152,11 +171,17 @@ export default function Price() {
 						<span>1 Year</span>
 					</PercentChangeTitleBlock>
 					<PercentChangeValue isPos={oneYearPos}>
-						{usdQuotes.percent_change_1y < 0
-							? "- " + +Math.abs(usdQuotes.percent_change_1y).toFixed(6)
-							: usdQuotes.percent_change_1y === 0
+						{marketData.price_change_percentage_1y_in_currency.usd < 0
+							? "- " +
+							  +Math.abs(
+									marketData.price_change_percentage_1y_in_currency.usd
+							  ).toFixed(6)
+							: marketData.price_change_percentage_1y_in_currency.usd === 0
 							? "-"
-							: "+ " + +usdQuotes.percent_change_1y.toFixed(6)}
+							: "+ " +
+							  +marketData.price_change_percentage_1y_in_currency.usd.toFixed(
+									6
+							  )}
 						%
 					</PercentChangeValue>
 				</PriceCard>

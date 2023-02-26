@@ -25,21 +25,11 @@ export default function Chart() {
 		curr_theme: theme,
 	} = useOutletContext<IDetailOutlet>();
 	console.log("cryptoId: ", cryptoId, "symbol: ", symbol);
-	const { isLoading, data: historicalData } = useQuery<IHistoricalData>(
+	const { isLoading, data: historicalData } = useQuery<number[][]>(
 		["ohlcv", symbol],
-		() => fetchCoinHistory(symbol)
+		() => fetchCoinHistory(cryptoId, 30) //1, 7, 30, 365, max
 	);
-	if (historicalData) {
-		const data1 = new Date(historicalData.Data.Data[0].time * 1000);
-		const data2 = historicalData.Data.Data.map((datapoint) => [
-			datapoint.time,
-			datapoint.open,
-			datapoint.high,
-			datapoint.low,
-			datapoint.close,
-		]);
-		console.log(data2);
-	}
+
 	const options: ApexOptions = {
 		chart: {
 			type: "candlestick",
@@ -75,15 +65,7 @@ export default function Chart() {
 					series={[
 						{
 							name: "ohlcv",
-							data: historicalData
-								? historicalData.Data.Data.map((datapoint) => [
-										datapoint.time * 1000,
-										datapoint.open,
-										datapoint.high,
-										datapoint.low,
-										datapoint.close,
-								  ])
-								: [],
+							data: historicalData ? historicalData : [],
 						},
 					]}
 					type="candlestick"

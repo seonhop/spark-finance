@@ -4,7 +4,7 @@ export const lightTheme: DefaultTheme = {
 	colorBg: "#E9ECF1",
 	colorNavBar: "#173582",
 	colorBlock: "white",
-	colorHover: "#f7f9ff",
+	colorHover: "#eaf0ff",
 	colorPrimary: "#173582",
 	colorSecondary: "#1A3782",
 	colorTertiary: "#2860D7",

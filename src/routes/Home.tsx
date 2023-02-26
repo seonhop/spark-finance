@@ -232,7 +232,7 @@ function Home() {
 												{"$ " +
 													crypto.current_price
 														.toLocaleString("en-US", {
-															minimumFractionDigits: 5,
+															minimumFractionDigits: 6,
 														})
 														.replace(/\.?0+$/, "")}
 											</CryptoPrice>
