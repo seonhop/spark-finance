@@ -15,7 +15,7 @@ import {
 } from "../components/BuildingBlocks";
 import LoadingScreen from "../components/Loading";
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { useState, useEffect, MouseEventHandler } from "react";
 import IPriceInfoData from "../interfaces/PriceInfoData";
 import IInfoData from "../interfaces/InfoData";
 import { useQuery } from "react-query";
@@ -24,6 +24,7 @@ import { formattedDate } from "../components/FormattedDate";
 import { IRootOutlet } from "../interfaces/RootOutlet";
 import { IfetchCryptosFromCoinGecko } from "../interfaces/CryptoGecko";
 import { formattedPrice } from "../components/FormattedPrice";
+import Chart from "./Chart";
 
 const BackButton = styled.div`
 	display: flex;
@@ -142,6 +143,13 @@ const Tabs = styled.div`
 	flex-direction: row;
 	gap: 12px;
 	margin: 8px 0px;
+	background-color: ${(props) => props.theme.colorBg};
+	padding: 8px;
+	border-radius: 8px;
+`;
+
+const TimeRangeTabs = styled(Tabs)`
+	font-size: 12px;
 `;
 
 const Tab = styled.div<{ isActive: boolean }>`
@@ -150,21 +158,29 @@ const Tab = styled.div<{ isActive: boolean }>`
 	justify-content: center;
 	span {
 		text-align: center;
-		text-transform: uppercase;
 	}
-	font-size: 12px;
+	font-size: 20px;
+
 	font-weight: 400;
 	background-color: ${(props) =>
 		props.isActive ? props.theme.colorNavBar : props.theme.colorBg};
-	padding: 12px 20px;
+	//padding: 12px 12px;
+	height: 36px;
+	padding: 8px;
 	border-radius: 10px;
 	border-width: thick;
 	border-color: ${(props) => props.theme.colorNavBar};
 	color: ${(props) =>
 		props.isActive ? props.theme.textRPrimary : props.theme.textRSecondary};
-	a {
-		display: block;
+	:hover {
+		cursor: pointer;
+		background-color: ${(props) =>
+			!props.isActive ? props.theme.colorHover : props.theme.colorNavBar};
 	}
+`;
+
+const TimeRangeTab = styled(Tab)`
+	font-size: 12px;
 `;
 
 const Description = styled.div`
@@ -292,28 +308,50 @@ const PriceDetailBlock = styled.div`
 	}
 `;
 
+const TabsContainer = styled.div`
+	display: flex;
+	justify-content: space-between;
+`;
+
 export default function Detail() {
 	const { state } = useLocation() as RouterState;
-	console.log(state);
 	const cryptoId = state?.info.id;
 	const priceMatch = useMatch("/:assetId/price");
 	const chartMatch = useMatch("/:assetId/chart");
 	const [isLineChart, setIsLineChart] = useState(true);
-	const onChartTypeClick = () => {
-		setIsLineChart((prev) => !prev);
+	const [timeRange, setTimeRange] = useState("1");
+
+	const onChartTypeClick = (event: React.MouseEvent<HTMLDivElement>) => {
+		const clickedEvent = event.target as HTMLDivElement;
+		const innerText = clickedEvent.textContent;
+		if (innerText != "Monitoring") {
+			setIsLineChart((prev) => !prev);
+		}
 	};
+
+	const onTimeRangeClick = (event: React.MouseEvent<HTMLDivElement>) => {
+		const clickedEvent = event.target as HTMLDivElement;
+		const innerText = clickedEvent.textContent;
+		if (innerText == "1D") {
+			setTimeRange((prev) => "1");
+		} else if (innerText == "1W") {
+			setTimeRange((prev) => "7");
+		} else if (innerText == "1M") {
+			setTimeRange((prev) => "30");
+		} else if (innerText == "1Y") {
+			setTimeRange((prev) => "365");
+		} else {
+			setTimeRange((prev) => "max");
+		}
+	};
+
 	const { curr_theme: theme } = useOutletContext<IRootOutlet>();
 	const { isLoading: infoLoading, data: infoData } = useQuery<IInfoData>(
 		["info", cryptoId],
 		() => fetchCryptoInfo(`${cryptoId}`)
 	);
-	const { isLoading: priceLoading, data: priceData } = useQuery<IPriceInfoData>(
-		["price", cryptoId],
-		() => fetchCryptoTickers(`${cryptoId}`)
-	);
-	const loading = infoLoading && priceLoading;
-	console.log("infoData: ", infoData);
-	console.log("priceData: ", priceData);
+	const loading = infoLoading;
+
 	const dateString = infoData?.genesis_date
 		? infoData?.genesis_date.toString()
 		: null;
@@ -437,29 +475,66 @@ export default function Detail() {
 					<DetailGrid>
 						<PriceChartBlock>
 							<DetailBlock>
-								<Tabs>
-									<Link
-										to="price"
-										state={{
-											info: state?.info,
-										}}
-									>
-										<Tab isActive={priceMatch !== null}>
-											<span>Price</span>
+								<TabsContainer>
+									<Tabs>
+										<Tab isActive={isLineChart} onClick={onChartTypeClick}>
+											<span className="material-symbols-outlined">
+												monitoring
+											</span>
 										</Tab>
-									</Link>
-									<Link to="chart" state={{ info: state?.info }}>
-										<Tab isActive={chartMatch !== null}>
-											<span>Chart</span>
+										<Tab isActive={!isLineChart} onClick={onChartTypeClick}>
+											<span className="material-symbols-outlined">
+												candlestick_chart
+											</span>
 										</Tab>
-									</Link>
-								</Tabs>
+									</Tabs>
+									<TimeRangeTabs>
+										<TimeRangeTab
+											isActive={timeRange === "1"}
+											onClick={onTimeRangeClick}
+										>
+											<span>1D</span>
+										</TimeRangeTab>
+										<TimeRangeTab
+											isActive={timeRange === "7"}
+											onClick={onTimeRangeClick}
+										>
+											<span>1W</span>
+										</TimeRangeTab>
+										<TimeRangeTab
+											isActive={timeRange === "30"}
+											onClick={onTimeRangeClick}
+										>
+											<span>1M</span>
+										</TimeRangeTab>
+										<TimeRangeTab
+											isActive={timeRange === "365"}
+											onClick={onTimeRangeClick}
+										>
+											<span>1Y</span>
+										</TimeRangeTab>
+										<TimeRangeTab
+											isActive={timeRange === "max"}
+											onClick={onTimeRangeClick}
+										>
+											<span>All</span>
+										</TimeRangeTab>
+									</TimeRangeTabs>
+								</TabsContainer>
+
 								{loading ? (
 									<LoadingScreen />
 								) : (
 									<>
 										<DataBlock>
-											<Outlet
+											<Chart
+												symbol={state?.info.symbol}
+												cryptoId={state?.info.id}
+												day={timeRange}
+												theme={theme}
+												isLineChart={isLineChart}
+											/>
+											{/* <Outlet
 												context={{
 													name: infoData?.name,
 													id: infoData?.id,
@@ -467,7 +542,7 @@ export default function Detail() {
 													curr_theme: theme,
 													infoData: infoData,
 												}}
-											/>
+											/> */}
 										</DataBlock>
 									</>
 								)}

@@ -5,7 +5,6 @@ const CRYPTO_COMPARE_PRICE_URL = `https://min-api.cryptocompare.com/data/pricemu
 const NICO_API = `https://ohlcv-api.nomadcoders.workers.dev?coinId=`;
 
 export function fetchCryptos() {
-	console.log(`${BASE_URL}/coins`);
 	return fetch(`${BASE_URL}/coins`).then((response) => response.json());
 }
 
@@ -32,7 +31,7 @@ export function fetchMarketChart(cryptoId: string, from: string, to: string) {
 	`);
 }
 
-export function fetchCoinHistory(cryptoId: string, days: number) {
+export function fetchCoinHistory(cryptoId: string, days: string) {
 	//const endDate = Math.floor(Date.now() / 1000);
 	//const startDate = endDate - 60 * 60 * 24 * 7; //one week ago
 	//console.log("endDate: ", endDate, "startDate: ", startDate);
@@ -44,7 +43,6 @@ export function fetchCoinHistory(cryptoId: string, days: number) {
 
 export function fetchAllCoinPrice(cryptoSymbols: string | undefined) {
 	const link = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${cryptoSymbols}&tsyms=USD`;
-	console.log(link);
 	return fetch(
 		`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${cryptoSymbols}&tsyms=USD`
 	).then((response) => response.json());

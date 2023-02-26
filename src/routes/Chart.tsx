@@ -18,22 +18,29 @@ const ChartBlock = styled(FlexBox)`
 	padding-top: 60px;
 `;
 
-export default function Chart() {
-	const {
+interface IChart {
+	isLineChart: boolean;
+	symbol: string;
+	cryptoId: string;
+	day: string;
+	theme: string;
+}
+
+export default function Chart(props: IChart) {
+	/* const {
 		id: cryptoId,
 		symbol,
 		curr_theme: theme,
-	} = useOutletContext<IDetailOutlet>();
-	console.log("cryptoId: ", cryptoId, "symbol: ", symbol);
+	} = useOutletContext<IDetailOutlet>(); */
 	const { isLoading, data: historicalData } = useQuery<number[][]>(
-		["ohlcv", symbol],
-		() => fetchCoinHistory(cryptoId, 30) //1, 7, 30, 365, max
+		["ohlcv", props.symbol],
+		() => fetchCoinHistory(props.cryptoId, props.day) //1, 7, 30, 365, max
 	);
+	console.log(props.day);
 	const close_prices = historicalData?.map((data) => ({
 		x: data[0],
 		y: data[data.length - 1],
 	}));
-	console.log(close_prices);
 	const lineOptions: ApexOptions = {
 		chart: {
 			type: "line",
@@ -44,7 +51,7 @@ export default function Chart() {
 			width: "400px",
 		},
 		theme: {
-			mode: theme == "dark" ? "dark" : "light",
+			mode: props.theme == "dark" ? "dark" : "light",
 		},
 		yaxis: {
 			labels: {
@@ -80,7 +87,7 @@ export default function Chart() {
 			background: "transparent",
 		},
 		theme: {
-			mode: theme == "dark" ? "dark" : "light",
+			mode: props.theme == "dark" ? "dark" : "light",
 		},
 		grid: { show: false },
 		yaxis: {
@@ -107,17 +114,23 @@ export default function Chart() {
 				"Chart is loading..."
 			) : (
 				<ReactApexChart
-					options={candleOptions}
+					options={props.isLineChart ? lineOptions : candleOptions}
 					series={[
 						{
-							name: "Closing Price",
-							data: historicalData ? historicalData : [],
+							name: props.isLineChart ? "Closing Price" : "ohlcv",
+							data: props.isLineChart
+								? close_prices
+									? close_prices
+									: []
+								: historicalData
+								? historicalData
+								: [],
 							//data: close_prices ? close_prices : [],
 						},
 					]}
 					width="1000"
 					height="300"
-					type="candlestick"
+					type={props.isLineChart ? "line" : "candlestick"}
 				/>
 			)}
 		</ChartBlock>
