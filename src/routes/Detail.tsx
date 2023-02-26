@@ -53,6 +53,7 @@ const BackButton = styled.div`
 		font-size: 20px;
 		width: auto;
 	}
+	color: ${(props) => props.theme.textRPrimary};
 `;
 
 const DetailGrid = styled(Grid)`
@@ -319,30 +320,35 @@ export default function Detail() {
 	const priceMatch = useMatch("/:assetId/price");
 	const chartMatch = useMatch("/:assetId/chart");
 	const [isLineChart, setIsLineChart] = useState(true);
+	const [chartType, setChartType] = useState("line");
 	const [timeRange, setTimeRange] = useState("1");
 
-	const onChartTypeClick = (event: React.MouseEvent<HTMLDivElement>) => {
-		const clickedEvent = event.target as HTMLDivElement;
-		const innerText = clickedEvent.textContent;
-		if (innerText != "Monitoring") {
-			setIsLineChart((prev) => !prev);
+	const onChartTypeClick = (name: string) => {
+		if (name === "monitoring") {
+			setIsLineChart(true);
+		} else {
+			setIsLineChart(false);
 		}
 	};
+	const TIME_RANGE = [
+		{ day: "1", label: "1D" },
+		{ day: "7", label: "1W" },
+		{ day: "30", label: "1M" },
+		{ day: "365", label: "1Y" },
+		{ day: "max", label: "ALL" },
+	];
 
-	const onTimeRangeClick = (event: React.MouseEvent<HTMLDivElement>) => {
-		const clickedEvent = event.target as HTMLDivElement;
-		const innerText = clickedEvent.textContent;
-		if (innerText == "1D") {
-			setTimeRange((prev) => "1");
-		} else if (innerText == "1W") {
-			setTimeRange((prev) => "7");
-		} else if (innerText == "1M") {
-			setTimeRange((prev) => "30");
-		} else if (innerText == "1Y") {
-			setTimeRange((prev) => "365");
-		} else {
-			setTimeRange((prev) => "max");
-		}
+	const CHART_ICONS = [
+		{ chart: "line", name: "monitoring" },
+		{ chart: "candlestick", name: "candlestick_chart" },
+	];
+
+	const onTimeRangeClick = (day: string) => {
+		setTimeRange(day);
+	};
+
+	const onChartClick = (chart: string) => {
+		setChartType(chart);
 	};
 
 	const { curr_theme: theme } = useOutletContext<IRootOutlet>();
@@ -477,48 +483,27 @@ export default function Detail() {
 							<DetailBlock>
 								<TabsContainer>
 									<Tabs>
-										<Tab isActive={isLineChart} onClick={onChartTypeClick}>
-											<span className="material-symbols-outlined">
-												monitoring
-											</span>
-										</Tab>
-										<Tab isActive={!isLineChart} onClick={onChartTypeClick}>
-											<span className="material-symbols-outlined">
-												candlestick_chart
-											</span>
-										</Tab>
+										{CHART_ICONS.map(({ name, chart }) => (
+											<Tab
+												isActive={chartType === chart}
+												onClick={() => onChartClick(chart)}
+											>
+												<span className="material-symbols-outlined">
+													{name}
+												</span>
+											</Tab>
+										))}
 									</Tabs>
 									<TimeRangeTabs>
-										<TimeRangeTab
-											isActive={timeRange === "1"}
-											onClick={onTimeRangeClick}
-										>
-											<span>1D</span>
-										</TimeRangeTab>
-										<TimeRangeTab
-											isActive={timeRange === "7"}
-											onClick={onTimeRangeClick}
-										>
-											<span>1W</span>
-										</TimeRangeTab>
-										<TimeRangeTab
-											isActive={timeRange === "30"}
-											onClick={onTimeRangeClick}
-										>
-											<span>1M</span>
-										</TimeRangeTab>
-										<TimeRangeTab
-											isActive={timeRange === "365"}
-											onClick={onTimeRangeClick}
-										>
-											<span>1Y</span>
-										</TimeRangeTab>
-										<TimeRangeTab
-											isActive={timeRange === "max"}
-											onClick={onTimeRangeClick}
-										>
-											<span>All</span>
-										</TimeRangeTab>
+										{TIME_RANGE.map(({ day, label }) => (
+											<TimeRangeTab
+												key={day + label}
+												isActive={timeRange === day}
+												onClick={() => onTimeRangeClick(day)}
+											>
+												<span>{label}</span>
+											</TimeRangeTab>
+										))}
 									</TimeRangeTabs>
 								</TabsContainer>
 
@@ -532,17 +517,8 @@ export default function Detail() {
 												cryptoId={state?.info.id}
 												day={timeRange}
 												theme={theme}
-												isLineChart={isLineChart}
+												isLineChart={chartType === "line"}
 											/>
-											{/* <Outlet
-												context={{
-													name: infoData?.name,
-													id: infoData?.id,
-													symbol: infoData?.symbol,
-													curr_theme: theme,
-													infoData: infoData,
-												}}
-											/> */}
 										</DataBlock>
 									</>
 								)}

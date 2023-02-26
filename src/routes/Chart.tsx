@@ -1,13 +1,9 @@
 import styled from "styled-components";
 import { useQuery } from "react-query";
 import { fetchCoinHistory } from "../api";
-import { useOutletContext } from "react-router-dom";
-import IDetailOutlet from "../interfaces/DetailOutlet";
-import { IHistoricalData } from "../interfaces/HistoricalData";
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { FlexBox } from "../components/BuildingBlocks";
-import { formattedDate } from "../components/FormattedDate";
 
 const ChartBlock = styled(FlexBox)`
 	justify-items: flex-end;
@@ -27,16 +23,10 @@ interface IChart {
 }
 
 export default function Chart(props: IChart) {
-	/* const {
-		id: cryptoId,
-		symbol,
-		curr_theme: theme,
-	} = useOutletContext<IDetailOutlet>(); */
 	const { isLoading, data: historicalData } = useQuery<number[][]>(
-		["ohlcv", props.symbol],
+		["ohlcv", props.day],
 		() => fetchCoinHistory(props.cryptoId, props.day) //1, 7, 30, 365, max
 	);
-	console.log(props.day);
 	const close_prices = historicalData?.map((data) => ({
 		x: data[0],
 		y: data[data.length - 1],
@@ -135,80 +125,4 @@ export default function Chart(props: IChart) {
 			)}
 		</ChartBlock>
 	);
-
-	/* 	const options: ApexOptions = {
-		chart: {
-			type: "candlestick",
-			zoom: {
-				enabled: true,
-			},
-			toolbar: {
-				show: false,
-			},
-			background: "transparent",
-		},
-		theme: {
-			mode: theme == "dark" ? "dark" : "light",
-		},
-		grid: { show: false },
-		yaxis: {
-			show: false,
-		},
-		xaxis: {
-			axisBorder: { show: false },
-			axisTicks: { show: false },
-			type: "datetime",
-		},
-	};
-
-	return (
-		<ChartBlock>
-			{isLoading ? (
-				"Chart is loading..."
-			) : (
-				<ReactApexChart
-					options={options}
-					series={[
-						{
-							name: "ohlcv",
-							data: historicalData ? historicalData : [],
-						},
-					]}
-					type="candlestick"
-					height={250}
-					width={600}
-				/>
-			)}
-		</ChartBlock>
-	); */
 }
-
-{
-	/* <ApexChart
-type="line"
-series={[
-	{
-		name: "price",
-		data: historicalData
-			? historicalData.Data.Data.map((datapoint) => [
-					datapoint.time,
-					datapoint.open,
-					datapoint.high,
-					datapoint.low,
-					datapoint.close,
-			  ])
-			: [],
-	},
-]}
-/> */
-}
-
-/* data: historicalData
-? historicalData.Data.Data.map((datapoint) => [
-		datapoint.time * 1000,
-		datapoint.open,
-		datapoint.high,
-		datapoint.low,
-		datapoint.close,
-  ])
-: [], */

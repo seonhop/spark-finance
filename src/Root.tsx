@@ -114,6 +114,9 @@ const Toggle = styled.button`
 
 	background-color: ${(props) => props.theme.colorBg};
 	color: ${(props) => props.theme.textPrimary};
+	:hover {
+		cursor: pointer;
+	}
 `;
 
 function Root() {

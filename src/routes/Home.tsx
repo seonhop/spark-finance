@@ -146,6 +146,9 @@ const CryptoTitleBlock = styled.div`
 		color: ${(props) => props.theme.textRSecondary};
 		font-size: 12px;
 	}
+	a {
+		text-decoration: underline;
+	}
 `;
 
 /* async function callAPI(cryptos:CryptoInterface[]) {
@@ -168,7 +171,7 @@ function Home() {
 			data[i].rank = i + 1;
 		}
 	}
-
+	const isNotLoading = !isLoading;
 	console.log(data);
 	/* 	const slicedData = data?.slice(0, 30);
 	const cryptoSymbols = slicedData?.map((crypto) => crypto.symbol).join(",");
