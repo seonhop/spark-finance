@@ -93,7 +93,7 @@ const CryptoLineBlock = styled(FlexBox)`
 
 const CryptoPrice = styled.h1`
 	font-size: 20px;
-	font-weight: 800;
+	font-weight: 600;
 `;
 
 interface CryptoInterface {
